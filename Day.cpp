@@ -11,7 +11,6 @@
 
 
 Day::Day(void){
-    std::cout <<"Creating day\n";
 }
 
 Shift* Day::getShift(int n){
@@ -29,7 +28,6 @@ Shift* Day::getShift(int n){
 }
 
 Day::~Day(void){
-    std::cout <<"Destroying day\n";
     shifts.clear();
 }
 

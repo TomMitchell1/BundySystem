@@ -11,7 +11,6 @@
 
 #include <stdio.h>
 #include <list>
-#include <assert.h>
 
 #include "Shift.h"
 

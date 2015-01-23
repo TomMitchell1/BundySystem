@@ -10,7 +10,6 @@
 #include "Week.h"
 
 Week::Week(){
-    std::cout <<"Creating week\n";
     int i=0;
     while(i<DAYS_IN_A_WEEK){
         days[i]=(Day*) malloc(sizeof(Day));
@@ -21,7 +20,6 @@ Week::Week(){
 }
 
 Week::~Week(){
-    std::cout <<"Destroying week\n";
     int i=0;
     while(i<DAYS_IN_A_WEEK){
         free(days[i]);

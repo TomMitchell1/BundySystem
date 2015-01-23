@@ -17,7 +17,6 @@
 //Member Functions
 
 Shift::Shift(void){
-    std::cout <<"Creating shift\n";
     started=false;
     hours=0;
     worked=false;
@@ -26,7 +25,7 @@ Shift::Shift(void){
 }
 
 Shift::~Shift(void){
-    std::cout <<"Destroying shift\n";
+
 }
 
 double Shift::getHours(void){
