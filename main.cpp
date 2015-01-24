@@ -95,12 +95,9 @@ void tests(void){
     data.newDay(25, 1, 2014);
     assert(data.getCurrentDay()==1);
     assert(data.getCurrentWeek()==0);
-    
-    assert(data.getWeek(0)->getDay(1)->getDay()==25);
-    assert(data.getWeek(0)->getDay(1)->getMonth()==1);
-    assert(data.getWeek(0)->getDay(1)->getYear()==2014);
-    
-    
+    assert(data.getWeek(0)->getDay(data.getCurrentDay())->getDay()==25);
+    assert(data.getWeek(0)->getDay(data.getCurrentDay())->getMonth()==1);
+    assert(data.getWeek(0)->getDay(data.getCurrentDay())->getYear()==2014);
     
     int i=0;
     i=data.getEmplyeeNumber("Tom");
@@ -109,6 +106,20 @@ void tests(void){
     data.getWeek(data.getCurrentWeek())->getDay(data.getCurrentDay())->getShift(i)->modifyTime(4);
     assert(data.getWeek(data.getCurrentWeek())->getDay(data.getCurrentDay())->getShift(i)->getHours()==4);
     assert(data.getWeek(data.getCurrentWeek())->totalHoursWorked(i)==4);
+    
+    data.newDay(26, 1, 2014);
+    
+    assert(data.getCurrentDay()==2);
+    assert(data.getCurrentWeek()==0);
+    assert(data.getWeek(0)->getDay(data.getCurrentDay())->getDay()==26);
+    assert(data.getWeek(0)->getDay(data.getCurrentDay())->getMonth()==1);
+    assert(data.getWeek(0)->getDay(data.getCurrentDay())->getYear()==2014);
+    data.getWeek(data.getCurrentWeek())->getDay(data.getCurrentDay())->getShift(i)->modifyTime(3.5);
+    assert(data.getWeek(data.getCurrentWeek())->getDay(data.getCurrentDay())->getShift(i)->getHours()==3.5);
+    assert(data.getWeek(data.getCurrentWeek())->totalHoursWorked(i)==7.5);
+    
+    
+    
     std::cout << "... completed!" << std::endl;
     
     
