@@ -19,11 +19,18 @@
 class Day {
 public:
     Shift *getShift(int n);
+    int getYear();
+    int getDay();
+    int getMonth();
+    void modifyDate(int d,int m,int y);
     void addShift(void);
     Day(void);
     ~Day(void);
 private:
     std::list<Shift> shifts;
+    int day;
+    int month;
+    int year;
 };
 
 

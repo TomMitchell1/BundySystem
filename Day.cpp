@@ -11,15 +11,43 @@
 
 
 Day::Day(void){
+    day=0;
+    month=0;
+    year=0;
+    
+}
+
+Day::~Day(void){
+    shifts.clear();
+}
+
+int Day::getDay(){
+    return day;
+}
+
+int Day::getMonth(){
+    return month;
+}
+
+int Day::getYear(){
+    return year;
+}
+
+void Day::modifyDate(int d,int m,int y){
+    day=d;
+    month=m;
+    year=y;
 }
 
 Shift* Day::getShift(int n){
     std::list<Shift>::iterator it=shifts.begin();
     int i=0;
     Shift* s=NULL;
-    while (it!=shifts.end()){
+    bool finished=false;
+    while (it!=shifts.end() && (!finished)){
         if(i==n){
             s= &*it;
+            finished=true;
         }
         it++;
         i++;
@@ -27,9 +55,7 @@ Shift* Day::getShift(int n){
     return s;
 }
 
-Day::~Day(void){
-    shifts.clear();
-}
+
 
 void Day::addShift(void){
     Shift s;
