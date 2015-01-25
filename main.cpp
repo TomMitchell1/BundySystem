@@ -81,10 +81,10 @@ void tests(void){
     
     
     std::cout << "Testing the data class";
-    Data data;
+    Data data(24,1,2014);
     data.addEmployee("Tom", 22.22, 12345);
     assert(data.getEmployee("Tom")!=NULL);
-    assert(data.getEmplyeeNumber("Tom")==0);
+    assert(data.getEmployeeNumber("Tom")==0);
     assert(data.getEmployee("Tom")->getName()=="Tom");
     assert(data.getEmployee("Tom")->getWage()==22.22);
     assert(data.getEmployee("Tom")->getTaxFileNumber()==12345);
@@ -92,7 +92,7 @@ void tests(void){
     assert(data.getWeek(0)!=NULL);
     assert(data.getCurrentDay()==0);
     assert(data.getCurrentWeek()==0);
-    data.newDay(25, 1, 2014);
+    data.newDay();
     assert(data.getCurrentDay()==1);
     assert(data.getCurrentWeek()==0);
     assert(data.getWeek(0)->getDay(data.getCurrentDay())->getDay()==25);
@@ -100,14 +100,14 @@ void tests(void){
     assert(data.getWeek(0)->getDay(data.getCurrentDay())->getYear()==2014);
     
     int i=0;
-    i=data.getEmplyeeNumber("Tom");
+    i=data.getEmployeeNumber("Tom");
     assert(data.getWeek(data.getCurrentWeek())->getDay(data.getCurrentDay())->getShift(i)!=NULL);
     assert(data.getWeek(data.getCurrentWeek())->getDay(data.getCurrentDay())->getShift(i)->getHours()==0);
     data.getWeek(data.getCurrentWeek())->getDay(data.getCurrentDay())->getShift(i)->modifyTime(4);
     assert(data.getWeek(data.getCurrentWeek())->getDay(data.getCurrentDay())->getShift(i)->getHours()==4);
     assert(data.getWeek(data.getCurrentWeek())->totalHoursWorked(i)==4);
     
-    data.newDay(26, 1, 2014);
+    data.newDay();
     
     assert(data.getCurrentDay()==2);
     assert(data.getCurrentWeek()==0);
@@ -117,14 +117,23 @@ void tests(void){
     data.getWeek(data.getCurrentWeek())->getDay(data.getCurrentDay())->getShift(i)->modifyTime(3.5);
     assert(data.getWeek(data.getCurrentWeek())->getDay(data.getCurrentDay())->getShift(i)->getHours()==3.5);
     assert(data.getWeek(data.getCurrentWeek())->totalHoursWorked(i)==7.5);
-    
-    
+    assert(data.getEmployee("James")==NULL);
     
     std::cout << "... completed!" << std::endl;
+    data.printWeeklyPay();
+    data.addEmployee("James", 45.34, 1234);
+    assert(data.getEmployee("James")!=NULL);
+    
+    int j=0;
+    while (j<30){
+        data.newDay();
+        j++;
+    }
     
     
     
     
-    std::cout <<"Tests are completed!" << "\n";
+    
+    std::cout <<"Tests are completed!" << std::endl;
 };
 

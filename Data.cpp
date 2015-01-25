@@ -10,11 +10,12 @@
 
 
 
-Data::Data(){
+Data::Data(int d, int m, int y){
     int i=0;
-    actualDay=0;
-    actualMonth=0;
-    actualYear=0;
+    initialDay=d;
+    initialMonth=m;
+    initialYear=y;
+    
     numberOfEmployees=0;
     week=0;
     day=0;
@@ -24,6 +25,7 @@ Data::Data(){
         new (weeks[i]) Week();
         i++;
     }
+    fillCalendar();
 }
 
 Data::~Data(){
@@ -39,6 +41,7 @@ Employee* Data::getEmployee(std::string s){
     std::list<Employee>::iterator it=workers.begin();
     int i=0;
     Employee* p=NULL;
+    
     bool finished=false;
     while ((it!=workers.end())&&(!finished)){
         p= &*it;
@@ -49,10 +52,14 @@ Employee* Data::getEmployee(std::string s){
             i++;
         }
     }
+    if(!finished){
+        p=NULL;
+    }
+    
     return p;
 }
 
-int Data::getEmplyeeNumber(std::string s){
+int Data::getEmployeeNumber(std::string s){
     std::list<Employee>::iterator it=workers.begin();
     int i=0;
     Employee* p=NULL;
@@ -66,6 +73,9 @@ int Data::getEmplyeeNumber(std::string s){
             it++;
             i++;
         }
+    }
+    if(!finished){
+        i=-1;
     }
     return i;
 }
@@ -82,25 +92,23 @@ int Data::getCurrentWeek(){
     return week;
 }
 
-void Data::newDay(int d,int m,int y){
+void Data::newDay(){
     
    
     //TODO if shifts are open for the day need to close them
     //As this would mean that someone forgot to clock off
-    actualDay=d;
-    actualMonth=m;
-    actualYear=y;
     day++;
+    
+    
     
     if(day==DAYS_IN_A_WEEK){
         day=0;
         week++;
+        printWeeklyPay();
     }
     
     if(week==WEEKS_IN_A_YEAR){
         newYear();
-    } else {
-        weeks[week]->getDay(day)->modifyDate(actualDay, actualMonth, actualYear);
     }
 }
 void Data::addEmployee(std::string name,double wage,int taxFileNumber){
@@ -123,14 +131,152 @@ void Data::addShifts(){
     }
 }
 
-
-
-void Data::newYear(){
+void Data::printWeeklyPay(){
+    int i=0;
+    std::list<Employee>::iterator it=workers.begin();
+    std::cout << std::fixed;
+    std::cout << std::setprecision(2);
+    std::cout << "\nPayments required for week "<<week+1 <<"\n" <<std::endl;
+    std::cout << "Starting on "<< getWeek(week)->getDay(START_OF_WEEK)->getDay()
+              << "/" << getWeek(week)->getDay(START_OF_WEEK)->getMonth()
+              << "/" << getWeek(week)->getDay(START_OF_WEEK)->getYear() <<std::endl;
     
+    std::cout << "Finishing on "<< getWeek(week)->getDay(END_OF_WEEK)->getDay()
+    << "/" << getWeek(week)->getDay(END_OF_WEEK)->getMonth()
+    << "/" << getWeek(week)->getDay(END_OF_WEEK)->getYear()<< "\n" <<std::endl;
+
+    
+    
+    while(i<numberOfEmployees){
+        std::cout << "Employee: " << it->getName() << std::endl;
+        std::cout << "Hourly rate:";
+        if(it->getWage() <10){
+            std::cout << " " <<it->getWage() <<std::endl;
+        } else {
+            std::cout <<it->getWage() <<std::endl;
+        }
+        std::cout << "Hours worked:";
+        if(getWeek(week)->totalHoursWorked(i)<10){
+            std::cout << " " << getWeek(week)->totalHoursWorked(i) << std::endl;
+        } else {
+            std::cout << getWeek(week)->totalHoursWorked(i) << std::endl;
+        }
+        std::cout << "Total weekly pay: " <<it->getWage()*getWeek(week)->totalHoursWorked(i) << "\n" <<std::endl;
+        i++;
+        it++;
+    }
+}
+
+void Data::newYear(void){
+    
+}
+
+void Data::fillCalendar(){
+    int d=START_OF_WEEK;
+    int w=0;
+    int actualDay=initialDay;
+    int actualMonth=initialMonth;
+    int actualYear=initialYear;
+    while(w<WEEKS_IN_A_YEAR){
+        d=START_OF_WEEK;
+        while(d<DAYS_IN_A_WEEK){
+            getWeek(w)->getDay(d)->modifyDate(actualDay, actualMonth, actualYear);
+            d++;
+            actualDay++;
+            if(actualMonth==JANUARY){
+                if(!(actualDay<DAYS_IN_JAN)){
+                    actualDay=START_OF_A_MONTH;
+                    actualMonth=FEBRUARY;
+                }
+            } else if(actualMonth==FEBRUARY){
+                if(isLeapyear(actualYear)){
+                    if(!(actualDay<DAYS_IN_FEBL)){
+                        actualDay=START_OF_A_MONTH;
+                        actualMonth=MARCH;
+                    }
+                } else {
+                    if(!(actualDay<DAYS_IN_FEB)){
+                        actualDay=START_OF_A_MONTH;
+                        actualMonth=MARCH;
+                    }
+                }
+            } else if(actualMonth==MARCH){
+                if(!(actualDay<DAYS_IN_MAR)) {
+                    actualDay=START_OF_A_MONTH;
+                    actualMonth=APRIL;
+                }
+            } else if(actualMonth==APRIL){
+                if(!(actualDay<DAYS_IN_APR)){
+                    actualDay=START_OF_A_MONTH;
+                    actualMonth=MAY;
+                }
+            } else if(actualMonth==MAY){
+                if(!(actualDay<DAYS_IN_MAY)){
+                    actualDay=START_OF_A_MONTH;
+                    actualMonth=JUNE;
+                }
+            } else if(actualMonth==JUNE){
+                if(!(actualDay<DAYS_IN_JUN)){
+                    actualDay=START_OF_A_MONTH;
+                    actualMonth=JULY;
+                }
+            } else if(actualMonth==JULY){
+                if(!(actualDay<DAYS_IN_JUL)){
+                    actualDay=START_OF_A_MONTH;
+                    actualMonth=AUGUST;
+                }
+            } else if(actualMonth==AUGUST){
+                if(!(actualDay<DAYS_IN_AUG)){
+                    actualDay=START_OF_A_MONTH;
+                    actualMonth=SEPTEMBER;
+                }
+            } else if(actualMonth==SEPTEMBER){
+                if(!(actualDay<DAYS_IN_SEP)){
+                    actualDay=START_OF_A_MONTH;
+                    actualMonth=OCTOBER;
+                }
+            } else if(actualMonth==OCTOBER){
+                if(!(actualDay<DAYS_IN_OCT)){
+                    actualDay=START_OF_A_MONTH;
+                    actualMonth=NOVEMBER;
+                }
+            } else if(actualMonth==OCTOBER){
+                if(!(actualDay<DAYS_IN_NOV)){
+                    actualDay=START_OF_A_MONTH;
+                    actualMonth=DECEMBER;
+                }
+            } else if(actualMonth==DECEMBER){
+                if(!(actualDay<DAYS_IN_DEC)){
+                    actualDay=START_OF_A_MONTH;
+                    actualMonth=JANUARY;
+                    actualYear++;
+                }
+            }
+        }
+        w++;
+    }
 }
 
 
 
-
+bool Data::isLeapyear(int year) {
+    
+    bool leapyear;
+    assert (year >=1582);
+    if ((year % 4) ==0) {
+        if ((year % 100) ==0) {
+            if ((year % 400) ==0) {
+                leapyear=true;
+            } else {
+                leapyear=false;
+            }
+        } else {
+            leapyear=true;
+        }
+    } else {
+        leapyear=true;
+    }
+    return leapyear;
+}
 
 
