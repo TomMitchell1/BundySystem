@@ -34,6 +34,7 @@ Data::~Data(){
         free(weeks[i]);
         i++;
     }
+    mkdir("data", 0777);
     workers.clear();
 }
 
@@ -97,19 +98,27 @@ void Data::newDay(){
    
     //TODO if shifts are open for the day need to close them
     //As this would mean that someone forgot to clock off
+    int i=0;
+    while(i<numberOfEmployees){
+        getWeek(week)->getDay(day)->getShift(i)->clockOut();
+        i++;
+    }
+    
+    
     day++;
-    
-    
     
     if(day==DAYS_IN_A_WEEK){
         day=0;
-        week++;
         printWeeklyPay();
+        week++;
     }
     
     if(week==WEEKS_IN_A_YEAR){
         newYear();
     }
+    std::cout << "Starting on "<< getWeek(week)->getDay(day)->getDay()
+    << "/" << getWeek(week)->getDay(day)->getMonth()
+    << "/" << getWeek(week)->getDay(day)->getYear() <<std::endl;
 }
 void Data::addEmployee(std::string name,double wage,int taxFileNumber){
     Employee e=Employee(name, wage, taxFileNumber);
@@ -133,38 +142,66 @@ void Data::addShifts(){
 
 void Data::printWeeklyPay(){
     int i=0;
+    std::ofstream outfile1;
+    std::ofstream outfile2;
+    std::string s=("data/week "+ std::to_string(week+1));
     std::list<Employee>::iterator it=workers.begin();
     std::cout << std::fixed;
     std::cout << std::setprecision(2);
-    std::cout << "\nPayments required for week "<<week+1 <<"\n" <<std::endl;
-    std::cout << "Starting on "<< getWeek(week)->getDay(START_OF_WEEK)->getDay()
+    mkdir(s.c_str(),0777);
+    outfile1.open((s+"/totalpayments.txt"));
+    outfile1 << "\nPayments required for week "<<week+1 <<"\n" <<std::endl;
+    outfile1 << "Starting on "<< getWeek(week)->getDay(START_OF_WEEK)->getDay()
               << "/" << getWeek(week)->getDay(START_OF_WEEK)->getMonth()
               << "/" << getWeek(week)->getDay(START_OF_WEEK)->getYear() <<std::endl;
     
-    std::cout << "Finishing on "<< getWeek(week)->getDay(END_OF_WEEK)->getDay()
+    outfile1 << "Finishing on "<< getWeek(week)->getDay(END_OF_WEEK)->getDay()
     << "/" << getWeek(week)->getDay(END_OF_WEEK)->getMonth()
     << "/" << getWeek(week)->getDay(END_OF_WEEK)->getYear()<< "\n" <<std::endl;
 
     
     
     while(i<numberOfEmployees){
-        std::cout << "Employee: " << it->getName() << std::endl;
-        std::cout << "Hourly rate:";
+        //Saving employee data to the overall text file
+        outfile1 << "Employee: " << it->getName() << std::endl;
+        outfile1 << "Hourly rate:";
         if(it->getWage() <10){
-            std::cout << " " <<it->getWage() <<std::endl;
+            outfile1 << " " <<it->getWage() <<std::endl;
         } else {
             std::cout <<it->getWage() <<std::endl;
         }
-        std::cout << "Hours worked:";
+        outfile1 << "Hours worked:";
         if(getWeek(week)->totalHoursWorked(i)<10){
-            std::cout << " " << getWeek(week)->totalHoursWorked(i) << std::endl;
+            outfile1 << " " << getWeek(week)->totalHoursWorked(i) << std::endl;
         } else {
-            std::cout << getWeek(week)->totalHoursWorked(i) << std::endl;
+            outfile1 << getWeek(week)->totalHoursWorked(i) << std::endl;
         }
-        std::cout << "Total weekly pay: " <<it->getWage()*getWeek(week)->totalHoursWorked(i) << "\n" <<std::endl;
+        outfile1 << "Total weekly pay: " <<it->getWage()*getWeek(week)->totalHoursWorked(i) << "\n" <<std::endl;
+        
+        
+        
+        //Saving an employees data to own personal payslip
+        outfile2.open((s+"/"+it->getName()+".txt"));
+        
+        outfile2 << "Employee: " << it->getName() << std::endl;
+        outfile2 << "Hourly rate:";
+        if(it->getWage() <10){
+            outfile2 << " " <<it->getWage() <<std::endl;
+        } else {
+            std::cout <<it->getWage() <<std::endl;
+        }
+       outfile2 << "Hours worked:";
+        if(getWeek(week)->totalHoursWorked(i)<10){
+            outfile2 << " " << getWeek(week)->totalHoursWorked(i) << std::endl;
+        } else {
+            outfile2 << getWeek(week)->totalHoursWorked(i) << std::endl;
+        }
+        outfile2 << "Total weekly pay: " <<it->getWage()*getWeek(week)->totalHoursWorked(i) << "\n" <<std::endl;
+        outfile2.close();
         i++;
         it++;
     }
+    outfile1.close();
 }
 
 void Data::newYear(void){

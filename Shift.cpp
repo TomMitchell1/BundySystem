@@ -35,13 +35,17 @@ double Shift::getHours(void){
 void Shift::clockIn(){
     time(&startingTime);
     worked=true;
+    started=true;
 }
 
 void Shift::clockOut(void){
     int x=0;
-    time(&finishingTime);
-    x=difftime(finishingTime, startingTime);
-    hours=x/SECONDS_IN_HOUR;
+    
+    if(started){
+        time(&finishingTime);
+        x=difftime(finishingTime, startingTime);
+        hours=x/SECONDS_IN_HOUR;
+    }
 }
 
 bool Shift::hasWorked(void){

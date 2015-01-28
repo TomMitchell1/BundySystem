@@ -10,12 +10,13 @@
 #define __BundySystem__Data__
 
 #include <stdio.h>
+#include <fstream>
 #include <iostream>
 #include <list>
 #include <string>
 #include <assert.h>
 #include <iomanip>
-
+#include <sys/stat.h>
 
 #include "Employee.h"
 #include "Week.h"

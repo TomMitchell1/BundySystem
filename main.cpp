@@ -7,10 +7,12 @@
 //
 
 #include <iostream>
+#include <fstream>
 #include <assert.h>
 #include <stdlib.h>
 #include <stdio.h>
-
+#include <string.h>
+#include <sys/stat.h>
 #include "Data.h"
 #include "Day.h"
 #include "Employee.h"
@@ -105,6 +107,7 @@ void tests(void){
     assert(data.getWeek(data.getCurrentWeek())->getDay(data.getCurrentDay())->getShift(i)->getHours()==0);
     data.getWeek(data.getCurrentWeek())->getDay(data.getCurrentDay())->getShift(i)->modifyTime(4);
     assert(data.getWeek(data.getCurrentWeek())->getDay(data.getCurrentDay())->getShift(i)->getHours()==4);
+    std::cout <<data.getWeek(data.getCurrentWeek())->totalHoursWorked(i) <<std::endl;
     assert(data.getWeek(data.getCurrentWeek())->totalHoursWorked(i)==4);
     
     data.newDay();
@@ -125,15 +128,13 @@ void tests(void){
     assert(data.getEmployee("James")!=NULL);
     
     int j=0;
-    while (j<30){
+    while (j<10){
         data.newDay();
         j++;
     }
     
-    
-    
-    
-    
     std::cout <<"Tests are completed!" << std::endl;
 };
+
+
 
