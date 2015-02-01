@@ -10,15 +10,15 @@
 
 
 
-Data::Data(int d, int m, int y){
+Data::Data(){
     int i=0;
-    initialDay=d;
-    initialMonth=m;
-    initialYear=y;
+    
+    loadData();
     
     numberOfEmployees=0;
-    week=0;
-    day=0;
+    std::string s=("data/"+std::to_string(initialYear)+"-"+std::to_string(initialYear+1));
+    mkdir("data", 0777);
+    mkdir(s.c_str(),0777);
     while(i<WEEKS_IN_A_YEAR){
         weeks[i]=(Week*) malloc(sizeof(Week));
         assert(weeks[i]!=NULL);
@@ -34,7 +34,6 @@ Data::~Data(){
         free(weeks[i]);
         i++;
     }
-    mkdir("data", 0777);
     workers.clear();
 }
 
@@ -116,10 +115,8 @@ void Data::newDay(){
     if(week==WEEKS_IN_A_YEAR){
         newYear();
     }
-    std::cout << "Starting on "<< getWeek(week)->getDay(day)->getDay()
-    << "/" << getWeek(week)->getDay(day)->getMonth()
-    << "/" << getWeek(week)->getDay(day)->getYear() <<std::endl;
 }
+
 void Data::addEmployee(std::string name,double wage,int taxFileNumber){
     Employee e=Employee(name, wage, taxFileNumber);
     numberOfEmployees++;
@@ -144,7 +141,7 @@ void Data::printWeeklyPay(){
     int i=0;
     std::ofstream outfile1;
     std::ofstream outfile2;
-    std::string s=("data/week "+ std::to_string(week+1));
+    std::string s=("data/"+std::to_string(initialYear)+"-"+std::to_string(initialYear+1)+"/week "+ std::to_string(week+1));
     std::list<Employee>::iterator it=workers.begin();
     std::cout << std::fixed;
     std::cout << std::setprecision(2);
@@ -168,7 +165,7 @@ void Data::printWeeklyPay(){
         if(it->getWage() <10){
             outfile1 << " " <<it->getWage() <<std::endl;
         } else {
-            std::cout <<it->getWage() <<std::endl;
+            outfile1 <<it->getWage() <<std::endl;
         }
         outfile1 << "Hours worked:";
         if(getWeek(week)->totalHoursWorked(i)<10){
@@ -188,7 +185,7 @@ void Data::printWeeklyPay(){
         if(it->getWage() <10){
             outfile2 << " " <<it->getWage() <<std::endl;
         } else {
-            std::cout <<it->getWage() <<std::endl;
+            outfile2 <<it->getWage() <<std::endl;
         }
        outfile2 << "Hours worked:";
         if(getWeek(week)->totalHoursWorked(i)<10){
@@ -294,8 +291,6 @@ void Data::fillCalendar(){
     }
 }
 
-
-
 bool Data::isLeapyear(int year) {
     
     bool leapyear;
@@ -316,4 +311,77 @@ bool Data::isLeapyear(int year) {
     return leapyear;
 }
 
+void Data::saveData(){
+    
+    int i=0;
+    int d=0;
+    int w=0;
+    std::list<Employee>::iterator it=workers.begin();
+    std::string s=("data/"+std::to_string(initialYear)+"-"+std::to_string(initialYear+1)+"/dataFile.txt");
+    std::string l=("data/day.txt");
+    std::ofstream dayFile;
+    std::ofstream dataFile;
+    Employee* e=NULL;
+    dayFile.open(l);  //Used for saving the current days to a file;
+    dataFile.open(s); //Used for saving data about employees and shifts worked
+    
+    
+    dayFile << initialDay << " " << initialMonth << " " << initialYear << " " <<day << " " << week <<std::endl;
+    //Add employees to the dataFile
+    while(i<numberOfEmployees){
+        
+        e=&*it;
+        dataFile << "e " << e->getName() << " " << e->getWage() << " " <<e->getTaxFileNumber()
+            << " " << e->getEmploymentStatus() << std::endl;
+        it++;
+        i++;
+    }
+    
+    i=0;
+    
+    //Save all the shifts into the data file
+    while(w<=week){
+        d=0;
+        while(d<DAYS_IN_A_WEEK){
+            i=0;
+            while(i<numberOfEmployees){
+                if(weeks[w]->getDay(d)->getShift(i)->hasWorked()){
+                    //Then it needs to be added into the file
+                    dataFile << "s "<< d << " " << w << " " <<weeks[w]->getDay(d)->getShift(i)->getHours()
+                        <<std::endl;
+                }
+                i++;
+            }
+            d++;
+        }
+        w++;
+    }
+    
+    dayFile.close();
+    dataFile.close();
+    
+}
 
+void Data::loadData(){
+    bool isSaveData=false;
+    std::string s="data/day.txt";
+    std::ifstream f(s.c_str());
+    std::ifstream inputFile("data/day.txt");
+    time_t theTime = time(NULL);
+    struct tm *aTime = localtime(&theTime);
+    
+    if (f.good()) {
+        f.close();
+        isSaveData=true;
+    }
+    if(isSaveData){
+        inputFile >> initialDay >> initialMonth >> initialYear >> day >> week;
+        inputFile.close();
+    } else {
+        initialDay = aTime->tm_mday;
+        initialMonth = aTime->tm_mon + 1;
+        initialYear = aTime->tm_year + 1900;
+        day=0;
+        week=0;
+    }
+}

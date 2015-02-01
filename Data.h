@@ -80,7 +80,7 @@ public:
     void printEmployeeYearlyWork(int n);
     void printEmployeeMonthly(int n);
     
-    Data(int d, int m, int y);
+    Data();
     ~Data();
 private:
     int week;
