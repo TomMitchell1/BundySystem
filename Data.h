@@ -22,18 +22,18 @@
 #include "Week.h"
 
 
-#define JANUARY 0
-#define FEBRUARY 1
-#define MARCH 2
-#define APRIL 3
-#define MAY 4
-#define JUNE 5
-#define JULY 6
-#define AUGUST 7
-#define SEPTEMBER 8
-#define OCTOBER 9
-#define NOVEMBER 10
-#define DECEMBER 11
+#define JANUARY 1
+#define FEBRUARY 2
+#define MARCH 3
+#define APRIL 4
+#define MAY 5
+#define JUNE 6
+#define JULY 7
+#define AUGUST 8
+#define SEPTEMBER 9
+#define OCTOBER 10
+#define NOVEMBER 11
+#define DECEMBER 12
 
 #define DAYS_IN_JAN 31
 #define DAYS_IN_FEB 28
@@ -65,7 +65,7 @@ public:
     Week* getWeek(int n);
     int getCurrentWeek(void);
     int getCurrentDay(void);
-    void addEmployee(std::string name,double wage,int taxFileNumber);
+    void addEmployee(std::string name,double wage,int taxFileNumber,bool working);
     void addShifts(void);
     
     void saveData(void);
@@ -76,8 +76,11 @@ public:
     void fillCalendar(void);
     bool isLeapyear(int year);
     
+    void allocateWeeks(void);
+    void freeWeeks(void);
+    
     void printWeeklyPay(void);
-    void printEmployeeYearlyWork(int n);
+    void printEmployeeYearlyWork(std::string name);
     void printEmployeeMonthly(int n);
     
     Data();
@@ -93,6 +96,6 @@ private:
     Week* weeks[WEEKS_IN_A_YEAR];
 };
 
-
+void printMonth(int n);
 
 #endif /* defined(__BundySystem__Data__) */

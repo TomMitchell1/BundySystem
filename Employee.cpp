@@ -8,10 +8,10 @@
 
 #include "Employee.h"
 
-Employee::Employee(std::string n,double w,int taxNum){
+Employee::Employee(std::string n,double w,int taxNum, bool working){
     name=n;
     wage=w;
-    currentlyWorking=true;
+    currentlyWorking=working;
     taxFileNumber=taxNum;
     
 }
