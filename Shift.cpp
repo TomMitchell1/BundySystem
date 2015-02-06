@@ -20,8 +20,12 @@ Shift::Shift(void){
     started=false;
     hours=0;
     worked=false;
-    startingTime=0;
-    finishingTime=0;
+    
+    startHour=0;
+    startMin=0;
+    finishHour=0;
+    finishMin=0;
+    
 }
 
 Shift::~Shift(void){
@@ -32,19 +36,58 @@ double Shift::getHours(void){
     return hours;
 }
 
+int Shift::getStartHour(){
+    return startHour;
+}
+
+int Shift::getFinishHour(){
+    return finishHour;
+}
+
+int Shift::getStartMin(){
+    return startMin;
+}
+
+int Shift::getFinishMin(){
+    return finishMin;
+}
+
 void Shift::clockIn(){
-    time(&startingTime);
-    worked=true;
+    time_t theTime = time(NULL);
+    struct tm *aTime = localtime(&theTime);
+    startHour=aTime->tm_hour;
+    startMin= aTime->tm_min;
+
     started=true;
 }
 
 void Shift::clockOut(void){
-    int x=0;
+    time_t theTime = time(NULL);
+    struct tm *aTime = localtime(&theTime);
+    finishHour=aTime->tm_hour;
+    finishMin=aTime->tm_min;
+    
+    double x=0;
     
     if(started){
-        time(&finishingTime);
-        x=difftime(finishingTime, startingTime);
-        hours=x/SECONDS_IN_HOUR;
+        if(finishHour<startHour){
+            x=finishHour+HOURS_IN_A_DAY-startHour;
+            if(finishMin<startMin){
+                x+= (double) (finishMin+MINUTES_IN_A_HOUR-startMin)/MINUTES_IN_A_HOUR;
+            } else {
+                x+= (double) (finishMin-startMin)/MINUTES_IN_A_HOUR;
+            }
+        } else {
+            x=finishHour-startHour;
+            if(finishMin<startMin){
+                x+= (double) (finishMin+MINUTES_IN_A_HOUR-startMin)/MINUTES_IN_A_HOUR;
+            } else {
+                
+                x+= (double) (finishMin-startMin)/MINUTES_IN_A_HOUR;
+            }
+        }
+        hours=x;
+        worked=true;
     }
 }
 
@@ -52,7 +95,44 @@ bool Shift::hasWorked(void){
     return worked;
 }
 
-void Shift::modifyTime(double d){
-    worked=true;
-    hours=d;
+bool Shift::hasStarted(void){
+    return started;
 }
+
+void Shift::modifyTime(int sHour,int sMin,int fHour,int fMin){
+    double x=0;
+    startHour=sHour;
+    startMin=sMin;
+    finishHour=fHour;
+    finishMin=fMin;
+    if(worked){
+        if(finishHour<startHour){
+            x=finishHour+HOURS_IN_A_DAY-startHour;
+            if(finishMin<startMin){
+                x+= (double) (finishMin+MINUTES_IN_A_HOUR-startMin)/MINUTES_IN_A_HOUR;
+            } else {
+                x+= (double) (finishMin-startMin)/MINUTES_IN_A_HOUR;
+            }
+        } else {
+            x=finishHour-startHour;
+            if(finishMin<startMin){
+                x+= (double) (finishMin+MINUTES_IN_A_HOUR-startMin)/MINUTES_IN_A_HOUR;
+            } else {
+                
+                x+= (double) (finishMin-startMin)/MINUTES_IN_A_HOUR;
+            }
+        }
+        hours=x;
+    }
+    
+    
+}
+
+void Shift::modifyStarted(bool s){
+    started=s;
+}
+
+void Shift::modifyWorked(bool w){
+    worked=w;
+}
+

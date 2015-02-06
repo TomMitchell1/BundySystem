@@ -20,6 +20,7 @@ public:
     int getTaxFileNumber(void);
     void endEmployment(void);
     void reEmploy(void);
+    void modifyWage(double w);
     Employee(std::string n, double w,int taxNum,bool working);
     
 private:

@@ -81,7 +81,6 @@ public:
     
     void printWeeklyPay(void);
     void printEmployeeYearlyWork(std::string name);
-    void printEmployeeMonthly(int n);
     
     Data();
     ~Data();

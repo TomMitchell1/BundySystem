@@ -101,7 +101,9 @@ void Data::newDay(){
     //As this would mean that someone forgot to clock off
     int i=0;
     while(i<numberOfEmployees){
-        getWeek(week)->getDay(day)->getShift(i)->clockOut();
+        if(getWeek(week)->getDay(day)->getShift(i)->hasStarted()){
+            getWeek(week)->getDay(day)->getShift(i)->clockOut();
+        }
         i++;
     }
     
@@ -225,69 +227,69 @@ void Data::newYear(void){
     std::list<Employee>::iterator it=workers.begin();
 
     if(m==JANUARY){
-        if(!(d<DAYS_IN_JAN)){
+        if(d>DAYS_IN_JAN){
             d=START_OF_A_MONTH;
             m=FEBRUARY;
         }
     } else if(m==FEBRUARY){
         if(isLeapyear(y)){
-            if(!(d<DAYS_IN_FEBL)){
+            if(d>DAYS_IN_FEBL){
                 d=START_OF_A_MONTH;
                 m=MARCH;
             }
         } else {
-            if(!(d<DAYS_IN_FEB)){
+            if(d>DAYS_IN_FEB){
                 d=START_OF_A_MONTH;
                 m=MARCH;
             }
         }
     } else if(m==MARCH){
-        if(!(d<DAYS_IN_MAR)) {
+        if(d>DAYS_IN_MAR) {
             d=START_OF_A_MONTH;
             m=APRIL;
         }
     } else if(m==APRIL){
-        if(!(d<DAYS_IN_APR)){
+        if(d>DAYS_IN_APR){
             d=START_OF_A_MONTH;
             m=MAY;
         }
     } else if(m==MAY){
-        if(!(d<DAYS_IN_MAY)){
+        if(d>DAYS_IN_MAY){
             d=START_OF_A_MONTH;
             m=JUNE;
         }
     } else if(m==JUNE){
-        if(!(d<DAYS_IN_JUN)){
+        if(d>DAYS_IN_JUN){
             d=START_OF_A_MONTH;
             m=JULY;
         }
     } else if(m==JULY){
-        if(!(d<DAYS_IN_JUL)){
+        if(d>DAYS_IN_JUL){
             d=START_OF_A_MONTH;
             m=AUGUST;
         }
     } else if(m==AUGUST){
-        if(!(d<DAYS_IN_AUG)){
+        if(d>DAYS_IN_AUG){
             d=START_OF_A_MONTH;
             m=SEPTEMBER;
         }
     } else if(m==SEPTEMBER){
-        if(!(d<DAYS_IN_SEP)){
+        if(d>DAYS_IN_SEP){
             d=START_OF_A_MONTH;
             m=OCTOBER;
         }
     } else if(m==OCTOBER){
-        if(!(d<DAYS_IN_OCT)){
+        if(d>DAYS_IN_OCT){
             d=START_OF_A_MONTH;
             m=NOVEMBER;
         }
     } else if(m==OCTOBER){
-        if(!(d<DAYS_IN_NOV)){
+        if(d>DAYS_IN_NOV){
             d=START_OF_A_MONTH;
             m=DECEMBER;
         }
     } else if(m==DECEMBER){
-        if(!(d<DAYS_IN_DEC)){
+        if(d>DAYS_IN_DEC){
             d=START_OF_A_MONTH;
             m=JANUARY;
             y++;
@@ -467,8 +469,22 @@ void Data::saveData(){
             while(i<numberOfEmployees){
                 if(weeks[w]->getDay(d)->getShift(i)->hasWorked()){
                     //Then it needs to be added into the file
-                    dataFile << "s "<< d << " " << w << " " <<weeks[w]->getDay(d)->getShift(i)->getHours()
-                        << " " << i <<std::endl;
+                    dataFile << "s "<< d << " " << w << " " <<weeks[w]->getDay(d)->getShift(i)->getStartMin()
+                        << " " <<weeks[w]->getDay(d)->getShift(i)->getStartHour()<< " "
+                        <<weeks[w]->getDay(d)->getShift(i)->getFinishMin()<< " "
+                        <<weeks[w]->getDay(d)->getShift(i)->getFinishHour()<< " ";
+                    
+                    if(weeks[w]->getDay(d)->getShift(i)->hasStarted()){
+                        dataFile << "1 ";
+                    } else {
+                        dataFile << "0 ";
+                    }
+                    if(weeks[w]->getDay(d)->getShift(i)->hasWorked()){
+                        dataFile << "1 ";
+                    } else {
+                        dataFile << "0 ";
+                    }
+                    dataFile << i <<std::endl;
                 }
                 i++;
             }
@@ -522,7 +538,14 @@ void Data::loadData(){
     int d=0;
     int w=0;
     int employeeNumber=0;
-    double hours=0;
+    
+    int startHour=0;
+    int finishHour=0;
+    int startMin=0;
+    int finishMin=0;
+    
+    bool started=false;
+    bool worked=true;
     
     
     while(getline(inputFile, line)){
@@ -533,7 +556,13 @@ void Data::loadData(){
         d=0;
         w=0;
         employeeNumber=0;
-        hours=0;
+        startHour=0;
+        finishHour=0;
+        startMin=0;
+        finishMin=0;
+        
+        started=false;
+        worked=false;
         
         if(line.substr(0,1)=="e") {
             //Search for the name
@@ -572,14 +601,45 @@ void Data::loadData(){
             i=(int) line.find(" ");
             w=atoi(line.substr(0,i).c_str());
             line=line.substr(i+1);
-            //Find the number of hours
+            //Find the starting minute
             i=0;
             i=(int) line.find(" ");
-            hours=atof(line.substr(0,i).c_str());
+            startMin=atoi(line.substr(0,i).c_str());
+            line=line.substr(i+1);
+            //Find the starting hour
+            i=0;
+            i=(int) line.find(" ");
+            startHour=atoi(line.substr(0,i).c_str());
+            line=line.substr(i+1);
+            //Find the finishing minute
+            i=0;
+            i=(int) line.find(" ");
+            finishMin=atoi(line.substr(0,i).c_str());
+            line=line.substr(i+1);
+            //Find the finishing hour
+            i=0;
+            i=(int) line.find(" ");
+            finishHour=atoi(line.substr(0,i).c_str());
+            line=line.substr(i+1);
+            //Has shift started
+            i=0;
+            i=(int) line.find(" ");
+            if(i==1){
+                started=true;
+            }
+            line=line.substr(i+1);
+            //Has finished work that day
+            i=0;
+            i=(int) line.find(" ");
+            if(i==1){
+                worked=true;
+            }
             line=line.substr(i+1);
             //Employee number
             employeeNumber=atoi(line.c_str());
-            getWeek(w)->getDay(d)->getShift(employeeNumber)->modifyTime(hours);
+            getWeek(w)->getDay(d)->getShift(employeeNumber)->modifyStarted(started);
+            getWeek(w)->getDay(d)->getShift(employeeNumber)->modifyWorked(worked);
+            getWeek(w)->getDay(d)->getShift(employeeNumber)->modifyTime(startHour,startMin,finishHour,finishMin);
         }
     }
 }
@@ -601,8 +661,9 @@ void Data::printEmployeeYearlyWork(std::string name){
         while (d<DAYS_IN_A_WEEK){
             if(getWeek(w)->getDay(d)->getShift(n)->hasWorked()){
                 if(month!=getWeek(w)->getDay(d)->getMonth()){
-                    printMonth(n);
+                    
                     month=getWeek(w)->getDay(d)->getMonth();
+                    printMonth(month);
                     std::cout << getWeek(w)->getDay(d)->getYear() << ":" << std::endl;
                 }
                 std::cout << getWeek(w)->getDay(d)->getDay()

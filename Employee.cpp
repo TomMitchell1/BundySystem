@@ -39,3 +39,7 @@ void Employee::endEmployment(void){
 void Employee::reEmploy(void){
     currentlyWorking=true;
 }
+
+void Employee::modifyWage(double w){
+    wage=w;
+}

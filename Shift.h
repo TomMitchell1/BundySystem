@@ -12,22 +12,38 @@
 #include <stdio.h>
 #include <time.h>
 
+#define HOURS_IN_A_DAY 24
+#define MINUTES_IN_A_HOUR 60
 class Shift
 {
 public:
     double getHours(void);
     void clockIn(void);
     void clockOut(void);
-    void modifyTime(double);
+    void modifyTime(int sHour,int sMin,int fHour,int fMin);
+    void modifyStarted(bool s);
+    void modifyWorked(bool w);
     bool hasWorked(void);
+    bool hasStarted(void);
+    
+    int getStartHour(void);
+    int getStartMin(void);
+    int getFinishMin(void);
+    int getFinishHour(void);
+    
     Shift();    //Constructor
     ~Shift();   //Destructor
 private:
     bool started;
     double hours;
     bool worked;
-    time_t startingTime;
-    time_t finishingTime;
+    
+    int startHour;
+    int startMin;
+    int finishHour;
+    int finishMin;
+    
+    
 };
 
 #endif /* defined(__BundySystem__Shift__) */
