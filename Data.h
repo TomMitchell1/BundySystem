@@ -62,9 +62,11 @@ class Data {
 public:
     int getEmployeeNumber(std::string s);
     Employee* getEmployee(std::string s);
+    Employee* getEmployee(int n);
     Week* getWeek(int n);
     int getCurrentWeek(void);
     int getCurrentDay(void);
+    int getNumberOfEmployees(void);
     void addEmployee(std::string name,double wage,int taxFileNumber,bool working);
     void addShifts(void);
     

@@ -69,7 +69,7 @@ void Shift::clockOut(void){
     
     double x=0;
     
-    if(started){
+    if(started && !worked){
         if(finishHour<startHour){
             x=finishHour+HOURS_IN_A_DAY-startHour;
             if(finishMin<startMin){

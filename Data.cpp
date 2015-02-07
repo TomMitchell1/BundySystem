@@ -61,6 +61,32 @@ Employee* Data::getEmployee(std::string s){
     return p;
 }
 
+Employee* Data::getEmployee(int n){
+    std::list<Employee>::iterator it=workers.begin();
+    int i=0;
+    Employee* p=NULL;
+    
+    bool finished=false;
+    while ((it!=workers.end())&&(!finished)){
+        p= &*it;
+        if(i==n){
+            finished=true;
+        } else {
+            it++;
+            i++;
+        }
+    }
+    if(!finished){
+        p=NULL;
+    }
+    
+    return p;
+}
+
+int Data::getNumberOfEmployees(){
+    return numberOfEmployees;
+}
+
 int Data::getEmployeeNumber(std::string s){
     std::list<Employee>::iterator it=workers.begin();
     int i=0;
@@ -467,7 +493,7 @@ void Data::saveData(){
         while(d<DAYS_IN_A_WEEK){
             i=0;
             while(i<numberOfEmployees){
-                if(weeks[w]->getDay(d)->getShift(i)->hasWorked()){
+                if(weeks[w]->getDay(d)->getShift(i)->hasStarted()){
                     //Then it needs to be added into the file
                     dataFile << "s "<< d << " " << w << " " <<weeks[w]->getDay(d)->getShift(i)->getStartMin()
                         << " " <<weeks[w]->getDay(d)->getShift(i)->getStartHour()<< " "

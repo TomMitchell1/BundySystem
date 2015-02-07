@@ -19,6 +19,10 @@
 #include "Shift.h"
 #include "Week.h"
 
+#define DAYS_IN_A_WEEK 7
+#define WEEKS_IN_A_YEAR 52
+#define STANDARD_WORKING_DAY 8
+
 void saveTests(void);
 void tests(void);
 void interface(void);
@@ -131,8 +135,6 @@ void tests(void){
     data.printWeeklyPay();
     data.addEmployee("James", 45.34, 1234,true);
     assert(data.getEmployee("James")!=NULL);
-    
-    data.saveData();
     std::cout <<"Tests are completed!" << std::endl;
 };
 
@@ -141,9 +143,13 @@ void interface(void){
     std::string line;
     std::string name;
     std::string restOfLine;
-    double wage;
+    double wage=0;;
+    double hours=0;
     int taxFileNumber;
-    
+    int week=0;
+    int day=0;
+    int i=0;
+    int mins;
     time_t theTime = time(NULL);
     struct tm *aTime = localtime(&theTime);
     
@@ -252,6 +258,37 @@ void interface(void){
             } else {
                 std::cout << "Not a valid employee name." << std::endl;
             }
+        } else if(!strcmp(line.c_str(), "resolve conflicts")){
+            //Check to see if people did not clock out at the end of a shift
+            i=0;
+            while(i<data.getNumberOfEmployees()){
+                week=0;
+                while (week<WEEKS_IN_A_YEAR){
+                    day=0;
+                    while(day<DAYS_IN_A_WEEK){
+                        if(data.getWeek(week)->getDay(day)->getShift(i)->getHours()>STANDARD_WORKING_DAY){
+                            std::cout << data.getEmployee(i)->getName() <<" didn't log out on ";
+                            std::cout << data.getWeek(week)->getDay(day)->getDay()
+                            << "/" << data.getWeek(week)->getDay(day)->getMonth()
+                            << "/" << data.getWeek(week)->getDay(day)->getYear() << std::endl;
+                            std::cout << "Does this need to be changed?" <<std::endl;
+                            std::getline(std::cin, line);
+                            if(!strcmp(line.c_str(), "yes")){
+                                std::cout << "How many hours did they work that day?" <<std::endl;
+                                std::cin >> hours;
+                                std::cin.ignore();
+                                mins= (int) ((hours-(int) hours)*MINUTES_IN_A_HOUR);
+                                data.getWeek(week)->getDay(day)->getShift(i)->modifyTime(0, 0, (int) hours,mins);
+                            }
+                        }
+                        day++;
+                    }
+                    week++;
+                }
+                i++;
+            }
+            data.saveData();
+            std::cout << "Finished resolving conflicts" <<std::endl;
         } else {
             std::cout << "Invalid command" <<std::endl;
         }
