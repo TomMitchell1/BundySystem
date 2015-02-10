@@ -8,6 +8,9 @@
 
 #include "Data.h"
 
+/*
+ Constructor
+*/
 Data::Data(){
     numberOfEmployees=0;
     mkdir("data", 0777);
@@ -15,11 +18,17 @@ Data::Data(){
     loadData();
 }
 
+/*
+ Destructor
+ */
 Data::~Data(){
     freeWeeks();
     workers.clear();
 }
 
+/*
+ Malloc's memory for storing the weeks
+ */
 void Data::allocateWeeks(){
     int i=0;
     while(i<WEEKS_IN_A_YEAR){
@@ -30,6 +39,9 @@ void Data::allocateWeeks(){
     }
 }
 
+/*
+ Free's memory for storing the weeks
+ */
 void Data::freeWeeks(){
     int i=0;
     while(i<WEEKS_IN_A_YEAR){
@@ -39,6 +51,9 @@ void Data::freeWeeks(){
     workers.clear();
 }
 
+/*
+ Returns and employee based on the name in the string s
+*/
 Employee* Data::getEmployee(std::string s){
     std::list<Employee>::iterator it=workers.begin();
     int i=0;
@@ -61,6 +76,9 @@ Employee* Data::getEmployee(std::string s){
     return p;
 }
 
+/*
+ Returns and employee based on the number int n
+ */
 Employee* Data::getEmployee(int n){
     std::list<Employee>::iterator it=workers.begin();
     int i=0;
@@ -83,10 +101,16 @@ Employee* Data::getEmployee(int n){
     return p;
 }
 
+/*
+ Returns the number of employees
+*/
 int Data::getNumberOfEmployees(){
     return numberOfEmployees;
 }
 
+/*
+ Given the string s, function returns the employee's number
+*/
 int Data::getEmployeeNumber(std::string s){
     std::list<Employee>::iterator it=workers.begin();
     int i=0;
@@ -108,18 +132,30 @@ int Data::getEmployeeNumber(std::string s){
     return i;
 }
 
+/*
+ Returns the week given by the int n
+*/
 Week* Data::getWeek(int n){
     return weeks[n];
 }
 
+/*
+ Returns the current day of the finanical year
+*/
 int Data::getCurrentDay(){
     return day;
 }
 
+/*
+ Returns the current finanical week
+*/
 int Data::getCurrentWeek(){
     return week;
 }
 
+/*
+ Advances the day of the financial year
+*/
 void Data::newDay(){
     
    
@@ -147,6 +183,9 @@ void Data::newDay(){
     }
 }
 
+/*
+ Adds an employee to the list of workers
+*/
 void Data::addEmployee(std::string name,double wage,int taxFileNumber,bool working){
     Employee e=Employee(name, wage, taxFileNumber,working);
     numberOfEmployees++;
@@ -154,6 +193,9 @@ void Data::addEmployee(std::string name,double wage,int taxFileNumber,bool worki
     workers.push_back(e);
 }
 
+/*
+ When a new employee is added, this adds a shift to each day of the financial year
+*/
 void Data::addShifts(){
     int d=0;
     int w=0;
@@ -167,6 +209,9 @@ void Data::addShifts(){
     }
 }
 
+/*
+ Prints the current financial week's payments. Saves individual payslips and combined payslip
+*/
 void Data::printWeeklyPay(){
     int i=0;
     std::ofstream outfile1;
@@ -233,6 +278,9 @@ void Data::printWeeklyPay(){
     outfile1.close();
 }
 
+/*
+ Creates a new financial year
+*/
 void Data::newYear(void){
     int d=0;
     int m=0;
@@ -344,6 +392,9 @@ void Data::newYear(void){
     saveData();
 }
 
+/*
+ Fills the financial year with calendar days 
+*/
 void Data::fillCalendar(){
     int d=START_OF_WEEK;
     int w=0;
@@ -431,6 +482,9 @@ void Data::fillCalendar(){
     }
 }
 
+/*
+ Returns true or false depending on whether a year is a leap year or not
+*/
 bool Data::isLeapyear(int year) {
     
     bool leapyear=false;;
@@ -451,6 +505,9 @@ bool Data::isLeapyear(int year) {
     return leapyear;
 }
 
+/*
+ Saves employee and shift data to files
+*/
 void Data::saveData(){
     
     int i=0;
@@ -524,6 +581,9 @@ void Data::saveData(){
     
 }
 
+/*
+ Loads employee and shift data from save files
+*/
 void Data::loadData(){
     bool isSaveData=false;
     std::string s="data/day.txt";
@@ -670,6 +730,8 @@ void Data::loadData(){
     }
 }
 
+/*
+ Prints a yearly summary of a employee's work history
 void Data::printEmployeeYearlyWork(std::string name){
     int d=0;
     int w=0;
@@ -704,31 +766,4 @@ void Data::printEmployeeYearlyWork(std::string name){
     }
     std::cout << "Summary of working year complete." << std::endl;
 }
-
-void printMonth(int n){
-    if(n==JANUARY){
-        std::cout << "January ";
-    } else if(n==FEBRUARY){
-        std::cout << "February ";
-    } else if(n==MARCH){
-        std::cout << "March ";
-    } else if(n==APRIL){
-        std::cout << "April ";
-    } else if(n==MAY){
-        std::cout << "May ";
-    } else if(n==JUNE){
-        std::cout << "June ";
-    } else if(n==JULY){
-        std::cout << "July ";
-    } else if(n==AUGUST){
-        std::cout << "August ";
-    } else if(n==SEPTEMBER){
-        std::cout << "September ";
-    } else if(n==OCTOBER){
-        std::cout << "October ";
-    } else if(n==NOVEMBER){
-        std::cout << "November ";
-    } else {
-        std::cout << "December ";
-    }
-}
+*/

@@ -15,7 +15,9 @@
 
 
 //Member Functions
-
+/*
+ Constructor
+*/
 Shift::Shift(void){
     started=false;
     hours=0;
@@ -28,30 +30,51 @@ Shift::Shift(void){
     
 }
 
+/*
+ Destructor
+ */
 Shift::~Shift(void){
 
 }
 
+/*
+ Returns the number of hours worked in this shift
+*/
 double Shift::getHours(void){
     return hours;
 }
 
+/*
+ Returns the starting hour of a shift
+ */
 int Shift::getStartHour(){
     return startHour;
 }
 
+/*
+ Returns the finishing hour of a shift
+ */
 int Shift::getFinishHour(){
     return finishHour;
 }
 
+/*
+ Returns the starting minute of a shift
+ */
 int Shift::getStartMin(){
     return startMin;
 }
 
+/*
+ Returns the finishing minute of a shift
+ */
 int Shift::getFinishMin(){
     return finishMin;
 }
 
+/* 
+ Begins the shift
+*/
 void Shift::clockIn(){
     time_t theTime = time(NULL);
     struct tm *aTime = localtime(&theTime);
@@ -61,6 +84,9 @@ void Shift::clockIn(){
     started=true;
 }
 
+/*
+ Ends the shift
+ */
 void Shift::clockOut(void){
     time_t theTime = time(NULL);
     struct tm *aTime = localtime(&theTime);
@@ -91,14 +117,23 @@ void Shift::clockOut(void){
     }
 }
 
+/*
+ Function to determine if a person finished working the shift
+*/
 bool Shift::hasWorked(void){
     return worked;
 }
 
+/*
+ Function to determine if a person started working the shift
+*/
 bool Shift::hasStarted(void){
     return started;
 }
 
+/*
+ Changes the amount of hours worked in the shift
+*/
 void Shift::modifyTime(int sHour,int sMin,int fHour,int fMin){
     double x=0;
     startHour=sHour;
@@ -128,10 +163,16 @@ void Shift::modifyTime(int sHour,int sMin,int fHour,int fMin){
     
 }
 
+/*
+ Changes if the shift has started
+ */
 void Shift::modifyStarted(bool s){
     started=s;
 }
 
+/*
+ Changes if the shift has finished
+ */
 void Shift::modifyWorked(bool w){
     worked=w;
 }

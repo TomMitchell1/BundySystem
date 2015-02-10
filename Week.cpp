@@ -9,6 +9,9 @@
 
 #include "Week.h"
 
+/*
+ Constructor
+*/
 Week::Week(){
     int i=0;
     while(i<DAYS_IN_A_WEEK){
@@ -19,6 +22,9 @@ Week::Week(){
     }
 }
 
+/*
+ Destructor
+ */
 Week::~Week(){
     int i=0;
     while(i<DAYS_IN_A_WEEK){
@@ -27,10 +33,16 @@ Week::~Week(){
     }
 }
 
+/*
+ Returns the day of the week specified by int n
+ */
 Day* Week::getDay(int n){
     return days[n];
 }
 
+/*
+ Returns the total hours worked by an employee
+ */
 double Week::totalHoursWorked(int n){
     double total=0;
     int i=0;

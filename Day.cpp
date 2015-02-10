@@ -9,7 +9,9 @@
 #include "Day.h"
 #include <iostream>
 
-
+/*
+ Constructor
+*/
 Day::Day(void){
     day=0;
     month=0;
@@ -17,28 +19,45 @@ Day::Day(void){
     
 }
 
+/*
+ Destructor
+ */
 Day::~Day(void){
     shifts.clear();
 }
-
+/*
+ Returns the current calendar day
+*/
 int Day::getDay(){
     return day;
 }
 
+/*
+ Returns the current calendar month
+ */
 int Day::getMonth(){
     return month;
 }
 
+/*
+ Returns the current calendar year
+ */
 int Day::getYear(){
     return year;
 }
 
+/*
+ Sets the calendar date
+ */
 void Day::modifyDate(int d,int m,int y){
     day=d;
     month=m;
     year=y;
 }
 
+/*
+ Returns the shift for a person specified by int n
+ */
 Shift* Day::getShift(int n){
     std::list<Shift>::iterator it=shifts.begin();
     int i=0;
@@ -55,8 +74,9 @@ Shift* Day::getShift(int n){
     return s;
 }
 
-
-
+/*
+ Adds a shift to the current day
+ */
 void Day::addShift(void){
     Shift s;
     shifts.push_back(s);
