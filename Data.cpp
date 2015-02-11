@@ -186,8 +186,8 @@ void Data::newDay(){
 /*
  Adds an employee to the list of workers
 */
-void Data::addEmployee(std::string name,double wage,int taxFileNumber,bool working){
-    Employee e=Employee(name, wage, taxFileNumber,working);
+void Data::addEmployee(std::string name,double wage,int taxFileNumber,int bsb,int accountNumber,bool working){
+    Employee e=Employee(name, wage, taxFileNumber,bsb,accountNumber,working);
     numberOfEmployees++;
     addShifts();
     workers.push_back(e);
@@ -238,6 +238,8 @@ void Data::printWeeklyPay(){
     while(i<numberOfEmployees){
         //Saving employee data to the overall text file
         outfile1 << "Employee: " << it->getName() << std::endl;
+        outfile1 << "Account number: " << it->getAccountNumber() <<std::endl;
+        outfile1 << "BSB: " << it->getBSB() << std:: endl;
         outfile1 << "Hourly rate:";
         if(it->getWage() <10){
             outfile1 << " " <<it->getWage() <<std::endl;
@@ -251,13 +253,15 @@ void Data::printWeeklyPay(){
             outfile1 << getWeek(week)->totalHoursWorked(i) << std::endl;
         }
         outfile1 << "Total weekly pay: " <<it->getWage()*getWeek(week)->totalHoursWorked(i) << "\n" <<std::endl;
-        
+        outfile1 << "Weekly super contribution: " <<it->getWage()*getWeek(week)->totalHoursWorked(i)*SUPER_CONTRIBUTION << "\n" <<std::endl;
         
         
         //Saving an employees data to own personal payslip
         outfile2.open((s+"/"+it->getName()+".txt"));
         
         outfile2 << "Employee: " << it->getName() << std::endl;
+        outfile2 << "Account number: " << it->getAccountNumber() <<std::endl;
+        outfile2 << "BSB: " << it->getBSB() << std:: endl;
         outfile2 << "Hourly rate:";
         if(it->getWage() <10){
             outfile2 << " " <<it->getWage() <<std::endl;
@@ -271,6 +275,7 @@ void Data::printWeeklyPay(){
             outfile2 << getWeek(week)->totalHoursWorked(i) << std::endl;
         }
         outfile2 << "Total weekly pay: " <<it->getWage()*getWeek(week)->totalHoursWorked(i) << "\n" <<std::endl;
+        outfile2 << "Weekly super contribution: " <<it->getWage()*getWeek(week)->totalHoursWorked(i)*SUPER_CONTRIBUTION << "\n" <<std::endl;
         outfile2.close();
         i++;
         it++;
@@ -376,7 +381,7 @@ void Data::newYear(void){
     
     while (it!=workers.end()){
         if(it->getEmploymentStatus()){
-            Employee e=Employee(it->getName(), it->getWage(), it->getTaxFileNumber(),true);
+            Employee e=Employee(it->getName(), it->getWage(), it->getTaxFileNumber(), it->getBSB(),it->getAccountNumber(),true);
             list.push_back(e);
             numberOfEmployees++;
             addShifts();
@@ -531,12 +536,12 @@ void Data::saveData(){
         e=&*it;
         if(e->getEmploymentStatus()){
             dataFile << "e " << e->getName() << " " << e->getWage() << " " <<e->getTaxFileNumber()
-                << " 1" << std::endl;
+                << " " << e->getAccountNumber()<< " " << e->getBSB()<< " 1" << std::endl;
             it++;
             i++;
         } else {
             dataFile << "e " << e->getName() << " " << e->getWage() << " " <<e->getTaxFileNumber()
-            << " 0" << std::endl;
+                << " " << e->getAccountNumber()<< " " << e->getBSB()<< " 0" << std::endl;
             it++;
             i++;
         }
@@ -617,6 +622,8 @@ void Data::loadData(){
     int i=0;
     int taxFileNumber=0;
     double wage=0;
+    int bsb=0;
+    int accountNumber=0;
     bool currentlyWorking;
     std::string line;
     std::string name;
@@ -666,6 +673,16 @@ void Data::loadData(){
             i=(int) line.find(" ");
             taxFileNumber=atoi(line.substr(0,i).c_str());
             line=line.substr(i+1);
+            //Find the account number
+            i=0;
+            i=(int) line.find(" ");
+            accountNumber=atoi(line.substr(0,i).c_str());
+            line=line.substr(i+1);
+            //Find the BSB
+            i=0;
+            i=(int) line.find(" ");
+            bsb=atoi(line.substr(0,i).c_str());
+            line=line.substr(i+1);
             //Find their current employment status
             i=0;
             if(line=="1"){
@@ -673,7 +690,7 @@ void Data::loadData(){
             } else {
                 currentlyWorking=false;
             }
-            addEmployee(name, wage, taxFileNumber, currentlyWorking);
+            addEmployee(name, wage, taxFileNumber,bsb,accountNumber, currentlyWorking);
         } else if(line.substr(0,1)=="s"){
             //Add a shift to a day
             line=line.substr(2);
@@ -732,6 +749,7 @@ void Data::loadData(){
 
 /*
  Prints a yearly summary of a employee's work history
+*/ 
 void Data::printEmployeeYearlyWork(std::string name){
     int d=0;
     int w=0;
@@ -766,4 +784,31 @@ void Data::printEmployeeYearlyWork(std::string name){
     }
     std::cout << "Summary of working year complete." << std::endl;
 }
-*/
+
+void printMonth(int n){
+    if(n==JANUARY){
+        std::cout << "January ";
+    } else if(n==FEBRUARY){
+        std::cout << "February ";
+    } else if(n==MARCH){
+        std::cout << "March ";
+    } else if(n==APRIL){
+        std::cout << "April ";
+    } else if(n==MAY){
+        std::cout << "May ";
+    } else if(n==JUNE){
+        std::cout << "June ";
+    } else if(n==JULY){
+        std::cout << "July ";
+    } else if(n==AUGUST){
+        std::cout << "August ";
+    } else if(n==SEPTEMBER){
+        std::cout << "September ";
+    } else if(n==OCTOBER){
+        std::cout << "October ";
+    } else if(n==NOVEMBER){
+        std::cout << "November ";
+    } else {
+        std::cout << "December ";
+    }
+}

@@ -18,16 +18,23 @@ public:
     double getWage(void);
     bool getEmploymentStatus(void);
     int getTaxFileNumber(void);
+    int getAccountNumber(void);
+    int getBSB(void);
     void endEmployment(void);
     void reEmploy(void);
     void modifyWage(double w);
-    Employee(std::string n, double w,int taxNum,bool working);
+    void modifyAccountNumber(int n);
+    void modifyBSB(int n);
+    Employee(std::string n, double w, int taxNum, int b, int account, bool working);
     
 private:
     std::string name;
     double wage;
     bool currentlyWorking;
     int taxFileNumber;
+    
+    int accountNumber;
+    int bsb;
     
 };
 

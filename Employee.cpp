@@ -11,11 +11,13 @@
 /*
  Constructor
  */
-Employee::Employee(std::string n,double w,int taxNum, bool working){
+Employee::Employee(std::string n,double w,int taxNum, int b, int account, bool working){
     name=n;
     wage=w;
     currentlyWorking=working;
     taxFileNumber=taxNum;
+    accountNumber=account;
+    bsb=b;
     
 }
 
@@ -31,6 +33,19 @@ std::string Employee::getName(void){
  */
 double Employee::getWage(void){
     return wage;
+}
+
+/*
+ Returns the employee's account number
+*/ 
+int Employee::getAccountNumber(void){
+    return accountNumber;
+}
+/*
+ Returns the employee's BSB
+*/
+int Employee::getBSB(void){
+    return bsb;
 }
 
 /*
@@ -64,4 +79,18 @@ void Employee::reEmploy(void){
 */
 void Employee::modifyWage(double w){
     wage=w;
+}
+
+/*
+ Changes the employee's account number
+ */
+void Employee::modifyAccountNumber(int n){
+    accountNumber=n;
+}
+
+/*
+ Changes the employee's bsb number
+ */
+void Employee::modifyBSB(int n){
+    bsb=n;
 }

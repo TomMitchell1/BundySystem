@@ -91,7 +91,7 @@ void tests(void){
     
     
     std::cout << "Tests for the Employee class";
-    Employee e("tom",22.65,1234567,true);
+    Employee e("tom",22.65,1234567,111111,12312312,true);
     assert(e.getName()=="tom");
     assert(e.getWage()==22.65);
     assert(e.getTaxFileNumber()==1234567);
@@ -104,7 +104,7 @@ void tests(void){
     
     std::cout << "Testing the data class";
     Data data;
-    data.addEmployee("Tom", 22.22, 12345,true);
+    data.addEmployee("Tom", 22.22, 12345,222222,12341234,true);
     assert(data.getEmployee("Tom")!=NULL);
     assert(data.getEmployeeNumber("Tom")==0);
     assert(data.getEmployee("Tom")->getName()=="Tom");
@@ -133,7 +133,7 @@ void tests(void){
     
     std::cout << "... completed!" << std::endl;
     data.printWeeklyPay();
-    data.addEmployee("James", 45.34, 1234,true);
+    data.addEmployee("James", 45.34, 1234,111111,12341234,true);
     assert(data.getEmployee("James")!=NULL);
     std::cout <<"Tests are completed!" << std::endl;
 };
@@ -146,6 +146,8 @@ void interface(void){
     double wage=0;;
     double hours=0;
     int taxFileNumber;
+    int accountNumber=0;
+    int bsb=0;
     int week=0;
     int day=0;
     int i=0;
@@ -167,11 +169,14 @@ void interface(void){
             std::cout << "Employee's wage: ";
             std:: cin >> wage;
             std::cout << "Employee's TFN: ";
-            std::cin >>taxFileNumber;
+            std::cin  >> taxFileNumber;
+            std::cout << "Employee's account number: ";
+            std:: cin >> accountNumber;
+            std::cout << "Employee's BSB number: ";
+            std:: cin >> bsb;
             std::cin.ignore();
-            data.addEmployee(name, wage, taxFileNumber, true);
+            data.addEmployee(name, wage, taxFileNumber, bsb, accountNumber, true);
             assert(data.getEmployee(name)!=NULL);
-            std::cout << name << std::endl;
             std::cout << "Employee was added." << std::endl;
             data.saveData();
             
@@ -189,7 +194,7 @@ void interface(void){
             std::cout << "Employee's name: ";
             std::getline(std::cin, name);
             if(data.getEmployee(name)!=NULL){
-                data.getEmployee(name)->endEmployment();
+                data.getEmployee(name)->reEmploy();
                 std::cout << name << " is now re-employed." <<std::endl;
                 data.saveData();
             } else {
@@ -213,18 +218,22 @@ void interface(void){
             std::cout << "Employee's name: ";
             std::getline(std::cin, name);
             if(data.getEmployee(name)!=NULL){
-                aTime = localtime(&theTime);
-                if(aTime->tm_mday!=data.getWeek(data.getCurrentWeek())->getDay(data.getCurrentDay())->getDay()){
-                    data.newDay();
-                    while(aTime->tm_mday!=data.getWeek(data.getCurrentWeek())->getDay(data.getCurrentDay())->getDay()         && (aTime->tm_mon+1)!=data.getWeek(data.getCurrentWeek())->
-                           getDay(data.getCurrentDay())->getMonth()
-                        && (aTime->tm_year+1900)!=data.getWeek(data.getCurrentWeek())->getDay(data.getCurrentDay())->getYear()){
+                if(!data.getWeek(data.getCurrentWeek())->getDay(data.getCurrentDay())->getShift(data.getEmployeeNumber(name))->hasStarted()){
+                    aTime = localtime(&theTime);
+                    if(aTime->tm_mday!=data.getWeek(data.getCurrentWeek())->getDay(data.getCurrentDay())->getDay()){
                         data.newDay();
+                        while(aTime->tm_mday!=data.getWeek(data.getCurrentWeek())->getDay(data.getCurrentDay())->getDay()         && (aTime->tm_mon+1)!=data.getWeek(data.getCurrentWeek())->
+                            getDay(data.getCurrentDay())->getMonth()
+                            && (aTime->tm_year+1900)!=data.getWeek(data.getCurrentWeek())->getDay(data.getCurrentDay())->getYear()){
+                            data.newDay();
+                        }
                     }
+                    data.getWeek(data.getCurrentWeek())->getDay(data.getCurrentDay())->getShift(data.getEmployeeNumber(name))->clockIn();
+                    std::cout << name << " has now been clocked in for the day." << std::endl;
+                    data.saveData();
+                } else {
+                    std::cout << name << " has already clocked in today." << std::endl;
                 }
-                data.getWeek(data.getCurrentWeek())->getDay(data.getCurrentDay())->getShift(data.getEmployeeNumber(name))->clockIn();
-                std::cout << name << " has now been clocked in for the day." << std::endl;
-                data.saveData();
             } else {
                 std::cout << "Not a valid employee name." << std::endl;
             }
@@ -233,19 +242,23 @@ void interface(void){
             std::cout << "Employee's name: ";
             std::getline(std::cin, name);
             if(data.getEmployee(name)!=NULL){
-                aTime = localtime(&theTime);
-                if(aTime->tm_mday!=data.getWeek(data.getCurrentWeek())->getDay(data.getCurrentDay())->getDay()){
-                    data.newDay();
-                    while(aTime->tm_mday!=data.getWeek(data.getCurrentWeek())->getDay(data.getCurrentDay())->getDay()         && (aTime->tm_mon+1)!=data.getWeek(data.getCurrentWeek())->
-                          getDay(data.getCurrentDay())->getMonth()
-                          && (aTime->tm_year+1900)!=data.getWeek(data.getCurrentWeek())->getDay(data.getCurrentDay())->getYear()){
+                if(!data.getWeek(data.getCurrentWeek())->getDay(data.getCurrentDay())->getShift(data.getEmployeeNumber(name))->hasWorked()){
+                    aTime = localtime(&theTime);
+                    if(aTime->tm_mday!=data.getWeek(data.getCurrentWeek())->getDay(data.getCurrentDay())->getDay()){
                         data.newDay();
+                        while(aTime->tm_mday!=data.getWeek(data.getCurrentWeek())->getDay(data.getCurrentDay())->getDay()         && (aTime->tm_mon+1)!=data.getWeek(data.getCurrentWeek())->
+                            getDay(data.getCurrentDay())->getMonth()
+                            && (aTime->tm_year+1900)!=data.getWeek(data.getCurrentWeek())->getDay(data.getCurrentDay())->getYear()){
+                            data.newDay();
+                        }
                     }
+                    data.getWeek(data.getCurrentWeek())->getDay(data.getCurrentDay())->getShift(data.getEmployeeNumber(name))->clockOut();
+                    std::cout << name << " has now been clocked out for the day. Hours worked ";
+                    std::cout << data.getWeek(data.getCurrentWeek())->getDay(data.getCurrentDay())->getShift(data.getEmployeeNumber(name))->getHours() << std::endl;
+                    data.saveData();
+                } else {
+                    std::cout << name << " has already clocked out today." << std::endl;
                 }
-                data.getWeek(data.getCurrentWeek())->getDay(data.getCurrentDay())->getShift(data.getEmployeeNumber(name))->clockOut();
-                std::cout << name << " has now been clocked out for the day. Hours worked ";
-                std::cout << data.getWeek(data.getCurrentWeek())->getDay(data.getCurrentDay())->getShift(data.getEmployeeNumber(name))->getHours() << std::endl;
-                data.saveData();
             } else {
                 std::cout << "Not a valid employee name." << std::endl;
             }
@@ -289,6 +302,49 @@ void interface(void){
             }
             data.saveData();
             std::cout << "Finished resolving conflicts" <<std::endl;
+        
+        } else if(!strcmp(line.c_str(),"change banking details")){
+            std::cout << "Employee's name: ";
+            std::getline(std::cin, name);
+            if(data.getEmployee(name)!=NULL){
+                std::cout << "Employee's account number: " <<data.getEmployee(name)->getAccountNumber() << std::endl;
+                std::cout << "Employee's new account number: ";
+                std::cin >> accountNumber;
+                std::cout << "Employee's BSB: " <<data.getEmployee(name)->getBSB() << std::endl;
+                std::cout << "Employee's new BSB: ";
+                std::cin >> bsb;
+                std::cin.ignore();
+                
+                
+                
+                
+                data.getEmployee(name)->modifyAccountNumber(accountNumber);
+                data.getEmployee(name)->modifyBSB(bsb);
+                
+                std::cout << "BSB and account number have been changed" << std::endl;
+                data.saveData();
+            } else {
+                std::cout << "Not a valid employee name." << std::endl;
+            }
+            
+        } else if(!strcmp(line.c_str(), "view employee data")){
+            std::cout << "Employee's name: ";
+            std::getline(std::cin, name);
+            if(data.getEmployee(name)!=NULL){
+                std::cout << "Employee's wage is: " <<data.getEmployee(name)->getWage() << std::endl;
+                std::cout << "Employee's tax file number is: " << data.getEmployee(name)->getTaxFileNumber()
+                    << std::endl;
+                std::cout << "Employee's bank account number is: " <<data.getEmployee(name)->getAccountNumber()
+                    <<std::endl;
+                std::cout << "Employee's bsb is: " <<data.getEmployee(name)->getBSB() <<std::endl;
+                if(data.getEmployee(name)->getEmploymentStatus()){
+                    std::cout << name << " is currently employed." <<std::endl;
+                } else {
+                    std::cout << name << " is not currently employed." <<std::endl;
+                }
+            } else {
+                std::cout << "Not a valid employee name." << std::endl;
+            }
         } else {
             std::cout << "Invalid command" <<std::endl;
         }

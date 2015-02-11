@@ -58,6 +58,8 @@
 #define WEEKS_IN_A_YEAR 52
 #define START_OF_WEEK 0
 #define END_OF_WEEK 6
+
+#define SUPER_CONTRIBUTION 0.095
 class Data {
 public:
     int getEmployeeNumber(std::string s);
@@ -67,7 +69,7 @@ public:
     int getCurrentWeek(void);
     int getCurrentDay(void);
     int getNumberOfEmployees(void);
-    void addEmployee(std::string name,double wage,int taxFileNumber,bool working);
+    void addEmployee(std::string name,double wage,int taxFileNumber,int bsb,int accountNumber,bool working);
     void addShifts(void);
     
     void saveData(void);
