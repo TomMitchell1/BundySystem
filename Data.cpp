@@ -531,6 +531,7 @@ void Data::saveData(){
     
     dayFile << initialDay << " " << initialMonth << " " << initialYear << " " <<day << " " << week <<std::endl;
     //Add employees to the dataFile
+    dataFile << "p " << password <<std::endl;
     while(i<numberOfEmployees){
         
         e=&*it;
@@ -610,6 +611,7 @@ void Data::loadData(){
         initialYear = aTime->tm_year + 1900;
         day=0;
         week=0;
+        password="admin";
     }
     fillCalendar();
     std::string folder=("data/"+std::to_string(initialYear)+"-"+std::to_string(initialYear+1));
@@ -727,14 +729,14 @@ void Data::loadData(){
             //Has shift started
             i=0;
             i=(int) line.find(" ");
-            if(i==1){
+            if(atoi(line.substr(0,i).c_str())==1){
                 started=true;
             }
             line=line.substr(i+1);
             //Has finished work that day
             i=0;
             i=(int) line.find(" ");
-            if(i==1){
+            if(atoi(line.substr(0,i).c_str())==1){
                 worked=true;
             }
             line=line.substr(i+1);
@@ -743,6 +745,10 @@ void Data::loadData(){
             getWeek(w)->getDay(d)->getShift(employeeNumber)->modifyStarted(started);
             getWeek(w)->getDay(d)->getShift(employeeNumber)->modifyWorked(worked);
             getWeek(w)->getDay(d)->getShift(employeeNumber)->modifyTime(startHour,startMin,finishHour,finishMin);
+        } else if(line.substr(0,1)=="p"){
+            line=line.substr(2);
+            i=(int) line.find(" ");
+            password=line.c_str();
         }
     }
 }
@@ -783,6 +789,20 @@ void Data::printEmployeeYearlyWork(std::string name){
         w++;
     }
     std::cout << "Summary of working year complete." << std::endl;
+}
+
+/*
+ Returns the current admin password
+*/
+std::string Data::getPassword(){
+    return password;
+}
+
+/*
+ Changes the current password
+*/
+void Data::modifyPassword(std::string s){
+    password=s;
 }
 
 void printMonth(int n){

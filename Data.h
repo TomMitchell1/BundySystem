@@ -66,11 +66,14 @@ public:
     Employee* getEmployee(std::string s);
     Employee* getEmployee(int n);
     Week* getWeek(int n);
+    std::string getPassword(void);
     int getCurrentWeek(void);
     int getCurrentDay(void);
     int getNumberOfEmployees(void);
     void addEmployee(std::string name,double wage,int taxFileNumber,int bsb,int accountNumber,bool working);
     void addShifts(void);
+    
+    void modifyPassword(std::string s);
     
     void saveData(void);
     void loadData(void);
@@ -95,6 +98,7 @@ private:
     int initialMonth;
     int initialYear;
     int numberOfEmployees;
+    std::string password;
     std::list<Employee> workers;
     Week* weeks[WEEKS_IN_A_YEAR];
 };

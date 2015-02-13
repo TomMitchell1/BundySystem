@@ -92,9 +92,7 @@ void Shift::clockOut(void){
     struct tm *aTime = localtime(&theTime);
     finishHour=aTime->tm_hour;
     finishMin=aTime->tm_min;
-    
     double x=0;
-    
     if(started && !worked){
         if(finishHour<startHour){
             x=finishHour+HOURS_IN_A_DAY-startHour;
