@@ -164,22 +164,27 @@ void interface(void){
         wage=0;
         taxFileNumber=0;
         if(!strcmp(line.c_str(), "add employee")){
-            std::cout << "Employee's name: ";
-            std::getline(std::cin, name);
-            std::cout << "Employee's wage: ";
-            std:: cin >> wage;
-            std::cout << "Employee's TFN: ";
-            std::cin  >> taxFileNumber;
-            std::cout << "Employee's account number: ";
-            std:: cin >> accountNumber;
-            std::cout << "Employee's BSB number: ";
-            std:: cin >> bsb;
-            std::cin.ignore();
-            data.addEmployee(name, wage, taxFileNumber, bsb, accountNumber, true);
-            assert(data.getEmployee(name)!=NULL);
-            std::cout << "Employee was added." << std::endl;
-            data.saveData();
-            
+            std::cout << "Enter admin password: ";
+            std::getline(std::cin, password);
+            if (!strcmp(password.c_str(),data.getPassword().c_str())){
+                std::cout << "Employee's name: ";
+                std::getline(std::cin, name);
+                std::cout << "Employee's wage: ";
+                std:: cin >> wage;
+                std::cout << "Employee's TFN: ";
+                std::cin  >> taxFileNumber;
+                std::cout << "Employee's account number: ";
+                std:: cin >> accountNumber;
+                std::cout << "Employee's BSB number: ";
+                std:: cin >> bsb;
+                std::cin.ignore();
+                data.addEmployee(name, wage, taxFileNumber, bsb, accountNumber, true);
+                assert(data.getEmployee(name)!=NULL);
+                std::cout << "Employee was added." << std::endl;
+                data.saveData();
+            } else {
+                std::cout << "Incorrect password" << std::endl;
+            }
         } else if(!strcmp(line.c_str(), "remove employee")){
             std::cout << "Enter admin password: ";
             std::getline(std::cin, password);
