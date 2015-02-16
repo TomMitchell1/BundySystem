@@ -281,7 +281,7 @@ void interface(void){
             } else {
                 std::cout << "Not a valid employee name." << std::endl;
             }
-        } else if(!strcmp(line.c_str(), "review data")){
+        } else if(!strcmp(line.c_str(), "review working history")){
             std::cout << "Employee's name: ";
             std::getline(std::cin, name);
             if(data.getEmployee(name)!=NULL){
@@ -359,7 +359,7 @@ void interface(void){
                 std::cout << "Incorrect password" << std::endl;
             }
             
-        } else if(!strcmp(line.c_str(), "view employee data")){
+        } else if(!strcmp(line.c_str(), "review employee data")){
             std::cout << "Enter admin password: ";
             std::getline(std::cin, password);
             if (!strcmp(password.c_str(),data.getPassword().c_str())){

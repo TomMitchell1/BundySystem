@@ -48,7 +48,6 @@ void Data::freeWeeks(){
         free(weeks[i]);
         i++;
     }
-    workers.clear();
 }
 
 /*
@@ -158,10 +157,8 @@ int Data::getCurrentWeek(){
 */
 void Data::newDay(){
     
-   
-    //TODO if shifts are open for the day need to close them
-    //As this would mean that someone forgot to clock off
     int i=0;
+    saveData();
     while(i<numberOfEmployees){
         if(getWeek(week)->getDay(day)->getShift(i)->hasStarted()){
             getWeek(week)->getDay(day)->getShift(i)->clockOut();
@@ -214,6 +211,8 @@ void Data::addShifts(){
 */
 void Data::printWeeklyPay(){
     int i=0;
+    double superAmount=0;
+    double tax=0;
     std::ofstream outfile1;
     std::ofstream outfile2;
     std::string s=("data/"+std::to_string(initialYear)+"-"+std::to_string(initialYear+1)+"/week "+ std::to_string(week+1));
@@ -224,7 +223,7 @@ void Data::printWeeklyPay(){
     outfile2 << std::setprecision(2);
     mkdir(s.c_str(),0777);
     outfile1.open((s+"/totalpayments.txt"));
-    outfile1 << "\nPayments required for week "<<week+1 <<"\n" <<std::endl;
+    outfile1 << "Payments required for week "<<week+1 <<"\n" <<std::endl;
     outfile1 << "Starting on "<< getWeek(week)->getDay(START_OF_WEEK)->getDay()
               << "/" << getWeek(week)->getDay(START_OF_WEEK)->getMonth()
               << "/" << getWeek(week)->getDay(START_OF_WEEK)->getYear() <<std::endl;
@@ -233,13 +232,13 @@ void Data::printWeeklyPay(){
     << "/" << getWeek(week)->getDay(END_OF_WEEK)->getMonth()
     << "/" << getWeek(week)->getDay(END_OF_WEEK)->getYear()<< "\n" <<std::endl;
 
-    
-    
     while(i<numberOfEmployees){
+        //Calculating the tax and superannuation amounts
+        superAmount=it->getWage()*getWeek(week)->totalHoursWorked(i)*SUPER_CONTRIBUTION;
+        tax=calculateTax(it->getWage()*getWeek(week)->totalHoursWorked(i));
         //Saving employee data to the overall text file
         outfile1 << "Employee: " << it->getName() << std::endl;
-        outfile1 << "Account number: " << it->getAccountNumber() <<std::endl;
-        outfile1 << "BSB: " << it->getBSB() << std:: endl;
+        outfile1 << "\n" <<std::endl;
         outfile1 << "Hourly rate:";
         if(it->getWage() <10){
             outfile1 << " " <<it->getWage() <<std::endl;
@@ -252,30 +251,42 @@ void Data::printWeeklyPay(){
         } else {
             outfile1 << getWeek(week)->totalHoursWorked(i) << std::endl;
         }
-        outfile1 << "Total weekly pay: " <<it->getWage()*getWeek(week)->totalHoursWorked(i) << "\n" <<std::endl;
-        outfile1 << "Weekly super contribution: " <<it->getWage()*getWeek(week)->totalHoursWorked(i)*SUPER_CONTRIBUTION << "\n" <<std::endl;
+        outfile1 << "Gross Pay: " <<it->getWage()*getWeek(week)->totalHoursWorked(i) <<std::endl;
+        outfile1 << "Pay Withholding (Tax): " << tax <<std::endl;
+        outfile1 << "Net Pay: " << it->getWage()*getWeek(week)->totalHoursWorked(i) - tax << std::endl;
+        outfile1 << "Superannuation: " << superAmount <<std::endl;
         
         
         //Saving an employees data to own personal payslip
         outfile2.open((s+"/"+it->getName()+".txt"));
         
         outfile2 << "Employee: " << it->getName() << std::endl;
-        outfile2 << "Account number: " << it->getAccountNumber() <<std::endl;
-        outfile2 << "BSB: " << it->getBSB() << std:: endl;
+        outfile2 << "\n" << std::endl;
+        outfile2 << "Payment for week "<<week+1 <<std::endl;
+        outfile2 << "Payment period from: ";
+        outfile2 << "Starting on "<< getWeek(week)->getDay(START_OF_WEEK)->getDay()
+        << "/" << getWeek(week)->getDay(START_OF_WEEK)->getMonth()
+        << "/" << getWeek(week)->getDay(START_OF_WEEK)->getYear();
+        outfile2 << "     To:     ";
+        outfile2 << "Finishing on "<< getWeek(week)->getDay(END_OF_WEEK)->getDay()
+        << "/" << getWeek(week)->getDay(END_OF_WEEK)->getMonth()
+        << "/" << getWeek(week)->getDay(END_OF_WEEK)->getYear()<< "\n" <<std::endl;
         outfile2 << "Hourly rate:";
         if(it->getWage() <10){
             outfile2 << " " <<it->getWage() <<std::endl;
         } else {
             outfile2 <<it->getWage() <<std::endl;
         }
-       outfile2 << "Hours worked:";
+        outfile2 << "Hours worked:";
         if(getWeek(week)->totalHoursWorked(i)<10){
             outfile2 << " " << getWeek(week)->totalHoursWorked(i) << std::endl;
         } else {
             outfile2 << getWeek(week)->totalHoursWorked(i) << std::endl;
         }
-        outfile2 << "Total weekly pay: " <<it->getWage()*getWeek(week)->totalHoursWorked(i) << "\n" <<std::endl;
-        outfile2 << "Weekly super contribution: " <<it->getWage()*getWeek(week)->totalHoursWorked(i)*SUPER_CONTRIBUTION << "\n" <<std::endl;
+        outfile2 << "Gross Pay: " <<it->getWage()*getWeek(week)->totalHoursWorked(i) <<std::endl;
+        outfile2 << "Pay Withholding (Tax): " << tax <<std::endl;
+        outfile2 << "Net Pay: " << it->getWage()*getWeek(week)->totalHoursWorked(i) - tax << std::endl;
+        outfile2 << "Superannuation: " << superAmount <<std::endl;
         outfile2.close();
         i++;
         it++;
@@ -291,20 +302,18 @@ void Data::newYear(void){
     int m=0;
     int y=0;
     numberOfEmployees=0;
-
     //Get the current day
     d=weeks[WEEKS_IN_A_YEAR-1]->getDay(DAYS_IN_A_WEEK-1)->getDay();
     m=weeks[WEEKS_IN_A_YEAR-1]->getDay(DAYS_IN_A_WEEK-1)->getMonth();
     y=weeks[WEEKS_IN_A_YEAR-1]->getDay(DAYS_IN_A_WEEK-1)->getYear();
     
-    saveData();
     freeWeeks();
     allocateWeeks();
     //Move employees over to the ne
     std::list<Employee> list;
     std::list<Employee> temp;
     std::list<Employee>::iterator it=workers.begin();
-
+    d++;
     if(m==JANUARY){
         if(d>DAYS_IN_JAN){
             d=START_OF_A_MONTH;
@@ -378,14 +387,17 @@ void Data::newYear(void){
     initialDay=d;
     initialMonth=m;
     initialYear=y;
-    
     while (it!=workers.end()){
-        if(it->getEmploymentStatus()){
+        if(it->getEmploymentStatus()==true){
+            std::cout << "adding employee to the new year" <<std::endl;
+        }
+        if(it->getEmploymentStatus()== true){
             Employee e=Employee(it->getName(), it->getWage(), it->getTaxFileNumber(), it->getBSB(),it->getAccountNumber(),true);
             list.push_back(e);
             numberOfEmployees++;
             addShifts();
         }
+        it++;
     }
     temp=workers;
     workers=list;
@@ -831,4 +843,31 @@ void printMonth(int n){
     } else {
         std::cout << "December ";
     }
+}
+
+/*
+ Calculates the amount of tax needed to be paid in a week given an employee's wage
+*/
+double calculateTax(double earnings){
+    // Based off scale 2 from ATO calculations
+    double tax=0;
+    if(earnings>355){
+        if(earnings < 395){
+            tax=0.19*earnings - 67.4635;
+        } else if(earnings < 493){
+            tax=0.29*earnings - 106.9673;
+        } else if(earnings < 711){
+            tax=0.21*earnings - 67.4642;
+        } else if(earnings < 1282){
+            tax=0.3477*earnings - 165.4431;
+        } else if(earnings < 1538){
+            tax=0.3450*earnings - 161.9815;
+        } else if(earnings < 3461){
+            tax=0.39*earnings - 231.2123;
+        } else {
+            tax=0.49*earnings - 577.3662;
+        }
+    }
+    
+    return tax;
 }

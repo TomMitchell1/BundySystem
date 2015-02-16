@@ -104,5 +104,6 @@ private:
 };
 
 void printMonth(int n);
+double calculateTax(double earnings);
 
 #endif /* defined(__BundySystem__Data__) */
