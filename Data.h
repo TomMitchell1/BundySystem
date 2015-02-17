@@ -52,7 +52,7 @@
 #define START_OF_A_MONTH 1
 
 
-
+//Defines for calendar and financial weeks
 
 #define DAYS_IN_A_WEEK 7
 #define WEEKS_IN_A_YEAR 52
@@ -60,6 +60,33 @@
 #define END_OF_WEEK 6
 
 #define SUPER_CONTRIBUTION 0.095
+
+//Tax thresholds
+#define tax_threshold_355 355
+#define tax_threshold_395 395
+#define tax_threshold_493 493
+#define tax_threshold_711 711
+#define tax_threshold_1282 1282
+#define tax_threshold_1538 1538
+#define tax_threshold_3461 3461
+//Tax constants
+//y=ax-b
+//a constants
+#define tax_threshold_395_a 0.1900
+#define tax_threshold_493_a 0.2900
+#define tax_threshold_711_a 0.2100
+#define tax_threshold_1282_a 0.3477
+#define tax_threshold_1538_a 0.3450
+#define tax_threshold_3461_a 0.3900
+#define tax_threshold_over_a 0.4900
+//b constants
+#define tax_threshold_395_b 67.4635
+#define tax_threshold_493_b 106.9673
+#define tax_threshold_711_b 67.4642
+#define tax_threshold_1282_b 165.4431
+#define tax_threshold_1538_b 161.9815
+#define tax_threshold_3461_b 231.2123
+#define tax_threshold_over_b 577.3662
 class Data {
 public:
     int getEmployeeNumber(std::string s);

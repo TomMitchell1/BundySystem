@@ -158,15 +158,14 @@ int Data::getCurrentWeek(){
 void Data::newDay(){
     
     int i=0;
-    saveData();
+    
     while(i<numberOfEmployees){
-        if(getWeek(week)->getDay(day)->getShift(i)->hasStarted()){
+        if(getWeek(week)->getDay(day)->getShift(i)->hasStarted() && !getWeek(week)->getDay(day)->getShift(i)->hasWorked()){
             getWeek(week)->getDay(day)->getShift(i)->clockOut();
         }
         i++;
     }
-    
-    
+    saveData();
     day++;
     
     if(day==DAYS_IN_A_WEEK){
@@ -211,8 +210,12 @@ void Data::addShifts(){
 */
 void Data::printWeeklyPay(){
     int i=0;
+    int j=0;
     double superAmount=0;
     double tax=0;
+    double taxYTD=0;
+    double superYTD=0;
+    double grossYTD=0;
     std::ofstream outfile1;
     std::ofstream outfile2;
     std::string s=("data/"+std::to_string(initialYear)+"-"+std::to_string(initialYear+1)+"/week "+ std::to_string(week+1));
@@ -236,6 +239,20 @@ void Data::printWeeklyPay(){
         //Calculating the tax and superannuation amounts
         superAmount=it->getWage()*getWeek(week)->totalHoursWorked(i)*SUPER_CONTRIBUTION;
         tax=calculateTax(it->getWage()*getWeek(week)->totalHoursWorked(i));
+        //Year to date calculations
+        grossYTD=0;
+        superYTD=0;
+        taxYTD=0;
+        j=0;
+        while (j<getCurrentWeek()){
+            grossYTD+=it->getWage()*getWeek(j)->totalHoursWorked(i);
+            superYTD+=it->getWage()*getWeek(j)->totalHoursWorked(i)*SUPER_CONTRIBUTION;
+            taxYTD+=calculateTax(it->getWage()*getWeek(j)->totalHoursWorked(i));
+            j++;
+        }
+        grossYTD+=it->getWage()*getWeek(week)->totalHoursWorked(i);
+        superYTD+=it->getWage()*getWeek(week)->totalHoursWorked(i)*SUPER_CONTRIBUTION;
+        taxYTD+=calculateTax(it->getWage()*getWeek(week)->totalHoursWorked(i));
         //Saving employee data to the overall text file
         outfile1 << "Employee: " << it->getName() << std::endl;
         outfile1 << "\n" <<std::endl;
@@ -255,7 +272,11 @@ void Data::printWeeklyPay(){
         outfile1 << "Pay Withholding (Tax): " << tax <<std::endl;
         outfile1 << "Net Pay: " << it->getWage()*getWeek(week)->totalHoursWorked(i) - tax << std::endl;
         outfile1 << "Superannuation: " << superAmount <<std::endl;
-        
+        outfile1 << "\nYear to date amounts" <<std::endl;
+        outfile1 << "Gross Pay: " <<grossYTD <<std::endl;
+        outfile1 << "Pay Withholding (Tax): " << taxYTD <<std::endl;
+        outfile1 << "Net Pay: " << grossYTD-taxYTD << std::endl;
+        outfile1 << "Superannuation: " << superYTD <<std::endl;
         
         //Saving an employees data to own personal payslip
         outfile2.open((s+"/"+it->getName()+".txt"));
@@ -287,6 +308,12 @@ void Data::printWeeklyPay(){
         outfile2 << "Pay Withholding (Tax): " << tax <<std::endl;
         outfile2 << "Net Pay: " << it->getWage()*getWeek(week)->totalHoursWorked(i) - tax << std::endl;
         outfile2 << "Superannuation: " << superAmount <<std::endl;
+        outfile2 << "\nYear to date amounts" <<std::endl;
+        outfile2 << "Gross Pay: " <<grossYTD <<std::endl;
+        outfile2 << "Pay Withholding (Tax): " << taxYTD <<std::endl;
+        outfile2 << "Net Pay: " << grossYTD-taxYTD << std::endl;
+        outfile2 << "Superannuation: " << superYTD <<std::endl;
+        
         outfile2.close();
         i++;
         it++;
@@ -851,21 +878,21 @@ void printMonth(int n){
 double calculateTax(double earnings){
     // Based off scale 2 from ATO calculations
     double tax=0;
-    if(earnings>355){
-        if(earnings < 395){
-            tax=0.19*earnings - 67.4635;
-        } else if(earnings < 493){
-            tax=0.29*earnings - 106.9673;
-        } else if(earnings < 711){
-            tax=0.21*earnings - 67.4642;
-        } else if(earnings < 1282){
-            tax=0.3477*earnings - 165.4431;
-        } else if(earnings < 1538){
-            tax=0.3450*earnings - 161.9815;
-        } else if(earnings < 3461){
-            tax=0.39*earnings - 231.2123;
+    if(earnings>tax_threshold_355){
+        if(earnings < tax_threshold_395){
+            tax=tax_threshold_395_a * earnings - tax_threshold_395_b;
+        } else if(earnings < tax_threshold_493){
+            tax=tax_threshold_493_a * earnings - tax_threshold_493_b;
+        } else if(earnings < tax_threshold_711){
+            tax=tax_threshold_711_a * earnings - tax_threshold_711_b;
+        } else if(earnings < tax_threshold_1282){
+            tax=tax_threshold_1282_a*earnings - tax_threshold_1282_b;
+        } else if(earnings < tax_threshold_1538){
+            tax=tax_threshold_1538_a * earnings - tax_threshold_1538_b;
+        } else if(earnings < tax_threshold_3461){
+            tax=tax_threshold_3461_a * earnings - tax_threshold_3461_b;
         } else {
-            tax=0.49*earnings - 577.3662;
+            tax=tax_threshold_over_a * earnings - tax_threshold_over_b;
         }
     }
     
