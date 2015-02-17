@@ -277,7 +277,11 @@ void Data::printWeeklyPay(){
         outfile1 << "Pay Withholding (Tax): " << taxYTD <<std::endl;
         outfile1 << "Net Pay: " << grossYTD-taxYTD << std::endl;
         outfile1 << "Superannuation: " << superYTD <<std::endl;
-        
+        outfile1 << "\nYear to date amounts" <<std::endl;
+        outfile1 << "Gross Pay: " <<grossYTD <<std::endl;
+        outfile1 << "Pay Withholding (Tax): " << taxYTD <<std::endl;
+        outfile1 << "Net Pay: " << grossYTD-taxYTD << std::endl;
+        outfile1 << "Superannuation: " << superYTD <<std::endl;
         //Saving an employees data to own personal payslip
         outfile2.open((s+"/"+it->getName()+".txt"));
         
