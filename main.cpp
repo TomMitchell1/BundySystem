@@ -28,10 +28,8 @@ void tests(void);
 void interface(void);
 
 int main(int argc, const char * argv[]) {
-    // insert code here...
     interface();
     //tests();
-    //saveTests();
     return EXIT_SUCCESS;
 }
 
