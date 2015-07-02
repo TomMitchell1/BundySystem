@@ -28,27 +28,10 @@ void tests(void);
 void interface(void);
 
 int main(int argc, const char * argv[]) {
-    // insert code here...
     interface();
     //tests();
-    //saveTests();
     return EXIT_SUCCESS;
 }
-
-void saveTests(){
-    Data data;
-    data.saveData();
-    
-    data.getWeek(data.getCurrentWeek())->getDay(3)->getShift(0)->modifyWorked(true);
-    data.getWeek(data.getCurrentWeek())->getDay(3)->getShift(0)->modifyTime(4,30,6,30);
-    std::cout << data.getWeek(data.getCurrentWeek())->getDay(3)->getShift(0)->getHours() << std::endl;
-    assert(data.getWeek(data.getCurrentWeek())->getDay(3)->getShift(0)->getHours()==2);
-    assert(data.getWeek(data.getCurrentWeek())->totalHoursWorked(0)==9.5);
-    
-    
-    data.saveData();
-}
-
 
 void tests(void){
     std::cout <<"Testing the shift class";
@@ -102,40 +85,6 @@ void tests(void){
     assert(e.getEmploymentStatus()==true);
     std::cout << "... completed!" << std::endl;
     
-    std::cout << "Testing the data class";
-    Data data;
-    data.addEmployee("Tom", 22.22, 12345,222222,12341234,true);
-    assert(data.getEmployee("Tom")!=NULL);
-    assert(data.getEmployeeNumber("Tom")==0);
-    assert(data.getEmployee("Tom")->getName()=="Tom");
-    assert(data.getEmployee("Tom")->getWage()==22.22);
-    assert(data.getEmployee("Tom")->getTaxFileNumber()==12345);
-    
-    assert(data.getWeek(0)!=NULL);
-    data.newDay();
-    
-    int i=0;
-    i=data.getEmployeeNumber("Tom");
-    assert(data.getWeek(data.getCurrentWeek())->getDay(data.getCurrentDay())->getShift(i)!=NULL);
-    assert(data.getWeek(data.getCurrentWeek())->getDay(data.getCurrentDay())->getShift(i)->getHours()==0);
-    data.getWeek(data.getCurrentWeek())->getDay(data.getCurrentDay())->getShift(i)->modifyWorked(true);
-    data.getWeek(data.getCurrentWeek())->getDay(data.getCurrentDay())->getShift(i)->modifyTime(0,0,4,0);
-    assert(data.getWeek(data.getCurrentWeek())->getDay(data.getCurrentDay())->getShift(i)->getHours()==4);
-    //assert(data.getWeek(data.getCurrentWeek())->totalHoursWorked(i)==4);
-    
-    data.newDay();
-    
-    data.getWeek(data.getCurrentWeek())->getDay(2)->getShift(i)->modifyWorked(true);
-    data.getWeek(data.getCurrentWeek())->getDay(2)->getShift(i)->modifyTime(3,0,6,30);
-    assert(data.getWeek(data.getCurrentWeek())->getDay(2)->getShift(i)->getHours()==3.5);
-    assert(data.getWeek(data.getCurrentWeek())->totalHoursWorked(i)==7.5);
-    assert(data.getEmployee("James")==NULL);
-    
-    std::cout << "... completed!" << std::endl;
-    data.printWeeklyPay();
-    data.addEmployee("James", 45.34, 1234,111111,12341234,true);
-    assert(data.getEmployee("James")!=NULL);
-    std::cout <<"Tests are completed!" << std::endl;
 };
 
 void interface(void){
