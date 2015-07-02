@@ -76,7 +76,7 @@ Employee* Data::getEmployee(std::string s){
 }
 
 /*
- Returns and employee based on the number int n
+ Returns and employee at index n
  */
 Employee* Data::getEmployee(int n){
     std::list<Employee>::iterator it=workers.begin();

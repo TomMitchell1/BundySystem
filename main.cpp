@@ -217,6 +217,12 @@ void interface(void){
             } else {
                 std::cout << "Incorrect password" << std::endl;
             }
+        } else if(!strcmp(line.c_str(), "list employees")){
+            i=0;
+            while(i< data.getNumberOfEmployees()){
+                std::cout << data.getEmployee(i)->getName() <<std::endl;
+                i++;
+            }
         } else if(!strcmp(line.c_str(),"change wage")){
             std::cout << "Enter admin password: ";
             std::getline(std::cin, password);
