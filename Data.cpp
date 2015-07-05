@@ -281,7 +281,7 @@ void Data::printWeeklyPay(){
         outfile1 << "Gross Pay: " <<grossYTD <<std::endl;
         outfile1 << "Pay Withholding (Tax): " << taxYTD <<std::endl;
         outfile1 << "Net Pay: " << grossYTD-taxYTD << std::endl;
-        outfile1 << "Superannuation: " << superYTD <<std::endl;
+        outfile1 << "Superannuation: " << superYTD << "\n" <<std::endl;
         //Saving an employees data to own personal payslip
         outfile2.open((s+"/"+it->getName()+".txt"));
         
@@ -649,8 +649,8 @@ void Data::loadData(){
         inputFile >> initialDay >> initialMonth >> initialYear >> day >> week;
         inputFile.close();
     } else {
-        initialDay = aTime->tm_mday;
-        initialMonth = aTime->tm_mon + 1;
+        initialDay = 1;
+        initialMonth = 7;
         initialYear = aTime->tm_year + 1900;
         day=0;
         week=0;
