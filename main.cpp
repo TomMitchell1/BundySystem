@@ -199,9 +199,8 @@ void interface(void){
                     aTime = localtime(&theTime);
                     if(aTime->tm_mday!=data.getWeek(data.getCurrentWeek())->getDay(data.getCurrentDay())->getDay()){
                         data.newDay();
-                        while(aTime->tm_mday!=data.getWeek(data.getCurrentWeek())->getDay(data.getCurrentDay())->getDay()         && (aTime->tm_mon+1)!=data.getWeek(data.getCurrentWeek())->
-                            getDay(data.getCurrentDay())->getMonth()
-                            && (aTime->tm_year+1900)!=data.getWeek(data.getCurrentWeek())->getDay(data.getCurrentDay())->getYear()){
+                        while(aTime->tm_mday!=data.getWeek(data.getCurrentWeek())->getDay(data.getCurrentDay())->getDay() || (aTime->tm_mon+1)!=data.getWeek(data.getCurrentWeek())->getDay(data.getCurrentDay())->getMonth()
+                            || (aTime->tm_year+1900)!=data.getWeek(data.getCurrentWeek())->getDay(data.getCurrentDay())->getYear()){
                             data.newDay();
                         }
                     }
@@ -222,9 +221,8 @@ void interface(void){
                     aTime = localtime(&theTime);
                     if(aTime->tm_mday!=data.getWeek(data.getCurrentWeek())->getDay(data.getCurrentDay())->getDay()){
                         data.newDay();
-                        while(aTime->tm_mday!=data.getWeek(data.getCurrentWeek())->getDay(data.getCurrentDay())->getDay()         && (aTime->tm_mon+1)!=data.getWeek(data.getCurrentWeek())->
-                            getDay(data.getCurrentDay())->getMonth()
-                            && (aTime->tm_year+1900)!=data.getWeek(data.getCurrentWeek())->getDay(data.getCurrentDay())->getYear()){
+                        while(aTime->tm_mday!=data.getWeek(data.getCurrentWeek())->getDay(data.getCurrentDay())->getDay() || (aTime->tm_mon+1)!=data.getWeek(data.getCurrentWeek())->getDay(data.getCurrentDay())->getMonth()
+                            || (aTime->tm_year+1900)!=data.getWeek(data.getCurrentWeek())->getDay(data.getCurrentDay())->getYear()){
                             data.newDay();
                         }
                     }
@@ -356,8 +354,5 @@ void interface(void){
         std::cout << "What would you like to do: ";
         std::getline(std::cin, line);
     }
-    
-    
-    
 }
 
